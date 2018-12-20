@@ -1,0 +1,1512 @@
+﻿@using PromotionCMS.Models
+@{
+    ViewBag.Title = "Trang chủ";
+}
+@{
+    var newsHot = (List<POST>)ViewBag.newHot;
+    var listBank = (List<BANK_CATEGORY>)ViewBag.listBank;
+    var bannerMiniste = (BANNER_MINISITE)ViewBag.bannerMiniste;
+    var textbanner = (SETTING)ViewBag.textbanner;
+    var listVideo = (SETTING)ViewBag.listVideo;
+}
+<section class="banner" id="banner">
+    <div class="banner__content__img">
+        <div id="banner-slider" class="owl-carousel owl-theme owl-loaded owl-drag">
+            <div class="banner-slider__item">
+                @if (bannerMiniste != null)
+                {
+                    <a href="@bannerMiniste.LINK" target="_blank" class="fancybox-gallery">
+                        <img src="@bannerMiniste.IMAGE_URL" alt="">
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="banner__grey">
+        @if (textbanner != null)
+        {
+            @Html.Raw(textbanner.ST_VALUE);
+        }
+    </div>
+</section>
+<section class="search" id="search">
+    <div class="container">
+        <div class="search-title color-white">
+            <div class="search-title-bg">TÌM THEO ĐỊA CHỈ YÊU THÍCH</div>
+        </div>
+        <table class="table-search search__one">
+            <tr>
+                <td>
+                    <select type="text" class="input select-js" id="tradeMartParent" name="tradeMartParent">
+                        <option value="0">Danh mục</option>
+                    </select>
+                </td>
+                <td>
+                    <select type="text" name="tradeMartChild" class="input select-js" id="tradeMartChild">
+                        <option value="0">Danh mục con</option>
+                    </select>
+                </td>
+                <td>
+                    <select type="text" name="SpTmName" class="input select-js" id="SpTmName">
+                        <option value="0">Thương hiệu</option>
+                    </select>
+                </td>
+                <td>
+                    <select type="text" name="province" class="input select-js" id="province">
+                        <option value="0">Tỉnh/Thành phố</option>
+
+                    </select>
+                </td>
+                <td>
+                    <select type="text" name="district" class="input select-js" id="district">
+                        <option value="0">Quận/huyện</option>
+                    </select>
+                </td>
+                <td>
+                    <div class="group-input">
+                        <button type="button" id="bt1" name="bt1" class="ic background-light-blue ic-search ic-right" style="cursor: pointer"></button>
+                        <input type="text" id="txtname" name="txtname" placeholder="Nhập từ khóa" class="search-search">
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div class="search-title color-white">
+            <div class="search-title-bg">TÌM THEO VỊ TRÍ CỦA BẠN</div>
+            <div class="search-title-sm">
+                Để tìm địa điểm gần bạn nhất click nút định vị
+                <img src="~/Resources/website/images/ic_paper-flight.svg" width="20" alt=""> hoặc nhập vị trí mong muốn và tìm theo khoảng cách
+            </div>
+        </div>
+        <table class="table-search search__two">
+            <tr>
+                <td>
+                    <div class="group-input">
+                        <input type="button" class="ic background-grey ic-flight ic-left" id="getAddLocation" />
+                        <input type="text" name="txtAddress" maxlength="300" id="txtAddress" placeholder="Nhập địa chỉ hiện tại - VD: 22 Láng Hạ, Hà Nội" class="search-start">
+                    </div>
+                </td>
+                <td>
+                    <select type="text" name="nganhhang" id="nganhhang" class="input select-js">
+                        <option value="all">Ngành hàng</option>
+                    </select>
+                </td>
+                <td>
+                    <select type="text" name="distance" id="distance" class="input select-js" placeholder="Khoảng cách">
+                        <option value="0">Khoảng cách</option>
+                        <option value="1">Dưới 1km</option>
+                        <option value="2">Dưới 2km</option>
+                        <option value="3">Dưới 3km</option>
+                        <option value="4">Dưới 4km</option>
+                        <option value="5">Dưới 5km</option>
+                        <option value="6">Dưới 6km</option>
+                        <option value="7">Dưới 7km</option>
+                        <option value="8">Dưới 8km</option>
+                        <option value="9">Dưới 9km</option>
+                        <option value="10">Dưới 10km</option>
+                    </select>
+                </td>
+                <td>
+                    <button class="search-btn" id="bt2" name="bt2">Tìm kiếm gần nhất</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</section>
+<section class="search-result">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5 no-padding-md">
+                <div class="search-result__panel" id="result-panel">
+                    <div class="lds-roller">
+
+                    </div>
+                    <div class="search-result__header" id="lengthList">
+
+                    </div>
+                    <div class="search-result__list" id="listarr">
+
+                    </div>
+                    <div class="text-center">
+                        <div class="search-result__pagination" id="paged">
+                        </div>
+                        <div style="font-size: 15px; color: green" id="totalPage"></div>
+                    </div>
+                </div>
+                <div class="search-result__direction" id="search-result__direction" style="display: none">
+                    <div class="header text-white header-back">
+                        Quay về
+                    </div>
+                    <div class="direction">
+                        <div class="direction__group">
+                            <div class="ic ic--start"></div>
+                            <input type="text" class="input-start" id="fromPoint" placeholder="Điểm đi">
+                        </div>
+                        <div class="direction__group">
+                            <div class="ic ic--end"></div>
+                            <input type="text" class="input-start" id="toPoint" placeholder="Điểm đến">
+                        </div>
+                        <div class="direction__group">
+                            <button class="btn-search-maploc" id="directPointAB">Chỉ đường</button>
+                        </div>
+                        <div class="direction__line"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7 no-padding-md">
+                <div id="map"></div>
+            </div>
+        </div>
+
+    </div>
+</section>
+<section class="partner2" ng-controller="HomeController">
+    <div class="partner2-body">
+        <div class="container">
+            <div class="partner2-body__header">Các ngân hàng trong chương trình</div>
+            <div class="owl-carousel owl-theme owl-partner owl-drag owl-custom">
+                @if (listBank != null)
+                {
+                    for (var i = 0; i < listBank.Count; i += 2)
+                    {
+                        <div class="owl-partner-item">
+                            <div class="owl-partner-item-sm">
+                                <a target="_blank" ng-if="deviceDetector.os === 'windows'" href="@listBank[i].LINK"><img src="@listBank[i].IMAGE_URL" alt=""></a>
+                                <a target="_blank" ng-if="deviceDetector.os === 'android'" href="@listBank[i].LINK_ANDROID"><img src="@listBank[i].IMAGE_URL" alt=""></a>
+                                <a target="_blank" ng-if="deviceDetector.os === 'ios' || deviceDetector.os === 'mac'" href="@listBank[i].LINK_IOS"><img src="@listBank[i].IMAGE_URL" alt=""></a>
+                                <span>@listBank[i].BANNER_TITLE</span>
+                            </div>
+                            @if (listBank.Count - 1 > i)
+                            {
+                                <div class="owl-partner-item-sm">
+                                    <a target="_blank" ng-if="deviceDetector.os === 'windows'" href="@listBank[i + 1].LINK"><img src="@listBank[i + 1].IMAGE_URL" alt=""></a>
+                                    <a target="_blank" ng-if="deviceDetector.os === 'android'" href="@listBank[i + 1].LINK_ANDROID"><img src="@listBank[i + 1].IMAGE_URL" alt=""></a>
+                                    <a target="_blank" ng-if="deviceDetector.os === 'ios' || deviceDetector.os === 'mac'" href="@listBank[i + 1].LINK_IOS"><img src="@listBank[i + 1].IMAGE_URL" alt=""></a>
+                                    <span>@listBank[i + 1].BANNER_TITLE</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>
+<section class="partner2">
+    <!-- <div class="partner2-top">
+          Chưa có <span class="medium">MOBILE BANKING</span> ?
+          <br> Click vào logo ngân hàng để trải nghiệm
+      </div> -->
+    <div class="partner2-body">
+        <div class="container">
+            <div class="partner2-body__header text-red"><a href="@Url.Action("Promotion","News")">Tin khuyến mãi</a></div>
+            <div class="owl-carousel owl-theme owl-sale owl-drag owl-custom">
+                @if (newsHot != null)
+                {
+                    foreach (var item in newsHot)
+                    {
+                        <div class="owl-sale-item">
+                            @if (item.POST_THUMBNAIL == "")
+                            {
+                                <a href="/tin-tuc-chi-tiet/@item.POST_ALIAS"><img src="~/Resources/website/images/nophoto.png" alt=""></a>
+                            }
+                            else
+                            {
+                                <a href="/tin-tuc-chi-tiet/@item.POST_ALIAS"><img src="@item.POST_THUMBNAIL" alt=""></a>
+                            }
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section-help" id="help">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                @*PLtXD_z8olkiKlbdLDJzzgGxr8TCa41Xaw*@
+                <iframe width="100%" class="youtube" height="400" src="https://www.youtube.com/embed/?autoplay=1&listType=playlist&list=@listVideo.ST_VALUE" playsinline frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+            <div class="col-md-5">
+                <div class="res">
+                    <div class="res__header">
+                        ĐĂNG KÝ NHẬN TIN
+                    </div>
+                    <form class="form-horizontal" id="receivenewsform" role="form" action="@Url.Action("ReceiveNewsCreate")" method="POST">
+                        <div class="res__content">
+                            <input type="text" id="RnName" name="RnName" class="res__input" placeholder="Họ và tên" maxlength="200">
+                            <input type="text" id="RnEmail" name="RnEmail" class="res__input" placeholder="Email" maxlength="200">
+                            <input type="text" id="RnPhone" name="RnPhone" class="res__input" placeholder="Số điện thoại" maxlength="12">
+                            <button class="btn-search-maploc" name="popup" id="popup">Đăng ký</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(".search-result").hide();
+    $(document).ready(function () { if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(showPosition) } else { console.error('Geolocation is not supported by this browser.') } var input = document.getElementById('txtAddress'); var searchBox = new google.maps.places.SearchBox(input); map.controls[google.maps.ControlPosition.TOP_LEFT].push(input); map.addListener('bounds_changed', function () { searchBox.setBounds(map.getBounds()) }); searchBox.addListener('places_changed', function () { var places = searchBox.getPlaces(); if (places.length == 0) { return } }) });
+    $("#bt2").click(function () { $(".search-result").show(); $('.lds-roller').append('<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>'); $('#search-result__direction').css('display', 'none'); $('#result-panel').css('display', 'block'); google.maps.event.addDomListener(window, 'load', GetPageDataType2(1)) });
+    $("#bt1").click(function () {
+        var tradeMartParent = '';
+        var tradeMartChild = '';
+        var spTmName = '';
+        var province = '';
+        var district = '';
+        var txtname = '';
+        tradeMartParent = $("#tradeMartParent").val();
+        tradeMartChild = $("#tradeMartChild").val();
+        spTmName = $("#SpTmName").val();
+        province = $("#province").val();
+        district = $("#district").val();
+        txtname = $("#txtname").val();
+        if (tradeMartParent === '0' && tradeMartChild === '0' && spTmName === '0' && province === '0' && district === '0' && txtname === '') {
+            alert("Bạn chưa nhập thông tin tìm kiếm");
+        } else {
+            $(".search-result").show();
+            $('#search-result__direction').css('display', 'none');
+            $('#result-panel').css('display', 'block');
+            $('.lds-roller').append('<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>');
+            google.maps.event.addDomListener(window, 'load', GetPageDataType1(1));
+        }
+    });
+    var map;
+    var lat = '';
+    var lng = '';
+    var long = '';
+    var pointB;
+    var pointA;
+    var latB = '';
+    var lngB = '';
+    var addB = '';
+    var lat1 = '';
+    var long1 = '';
+    var latlong1;
+    var baseUrl = '/Resources/website/images/';
+    var options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+    };
+    function success(pos) { var crd = pos.coords; lat = crd.latitude; long = crd.longitude; console.log('Your current position is:'); console.log('Latitude : ${crd.latitude}'); console.log('Longitude: ${crd.longitude}'); console.log('More or less ${crd.accuracy} meters.') };
+    function error(err) {
+        console.warn('ERROR(${err.code}): ${err.message}');
+    };
+    function showPosition(position) { lat = position.coords.latitude; long = position.coords.longitude; if (lat !== '' && long !== '') { pointA = new google.maps.LatLng(lat, long) } }
+    function saveData($result) { $('#search-result__direction').css('display', 'block'); $('#result-panel').css('display', 'none'); var str = $result; var temp = str.split("_"); if (temp.length > 0) { latB = parseFloat(temp[0]); lngB = parseFloat(temp[1]) } pointB = new google.maps.LatLng(latB, lngB); var geocoder = new google.maps.Geocoder(); if (!isNaN(latB) && !isNaN(lngB)) { var latlng = { lat: latB, lng: lngB }; setTimeout(geocoder.geocode({ 'location': latlng }, function (results, status) { if (status === 'OK') { if (results[0]) { $("#toPoint").attr('value', results[0].formatted_address); $("#toPoint").attr('disabled', 'disabled') } else { window.alert('No results found') } } }), 2000) } if ($("#txtAddress").val() !== '') { $("#fromPoint").attr('value', $("#txtAddress").val()) } if (lat !== '' && long !== '') { var latlng1 = { lat: lat, lng: long }; setTimeout(geocoder.geocode({ 'location': latlng1 }, function (results, status) { if (status === 'OK') { if (results[0]) { $("#fromPoint").attr('value', results[0].formatted_address) } else { window.alert('No results found') } } }), 2000) } };
+    $("#txtAddress").change(function () { if ($("#txtAddress").val() !== '') { $("#fromPoint").attr('value', $("#txtAddress").val()) } });
+    function initMap(pointA, pointB) { myOptions = { center: { lat: 21.016189, lng: 105.813606 }, zoom: 18 }, map = new google.maps.Map(document.getElementById('map'), myOptions), directionsService = new google.maps.DirectionsService, directionsDisplay = new google.maps.DirectionsRenderer({ map: map }), calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) };
+    function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) { directionsService.route({ origin: pointA, destination: pointB, travelMode: google.maps.TravelMode.DRIVING }, function (response, status) { if (status === google.maps.DirectionsStatus.OK) { directionsDisplay.setDirections(response) } else { window.alert('Directions request failed due to ' + status) } }) };
+    //Driect A=>B
+    $("#directPointAB").click(function () { var address1 = $("#fromPoint").val(); if (lat !== '' && long !== '' && address1 === '') { initMap(pointA, pointB) } else { var geocoder = new google.maps.Geocoder(); if (address1 !== '') { setTimeout(geocoder.geocode({ 'address': address1 }, function (results, status) { if (status === google.maps.GeocoderStatus.OK) { initMap(results[0].geometry.location, pointB) } else { alert('Kết nối bị gián đoạn. Vui long thử lại') } }), 2000) } } });
+    function showLocationPoint($result) {
+        var str = $result;
+        var temp = str.split("_");
+        if (temp.length > 0) {
+            var latSp = parseFloat(temp[0]);
+            var lngSp = parseFloat(temp[1]);
+            var id = parseFloat(temp[2]);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetSalePointById", "Home")',
+                data: {
+                    id: id
+                },
+                dataType: 'JSON',
+                success: function (result) {
+                    var data = [];
+                    data = result.RspList;
+                    var mapOptions = {
+                        zoom: 13,
+                        center: new google.maps.LatLng(latSp, lngSp), // 22 lang ha
+                    };
+                    var mapElement = document.getElementById('map');
+                    var map = new google.maps.Map(mapElement, mapOptions);
+                    var marker;
+                    var geocoder = new google.maps.Geocoder();
+                    var markers = [];
+                    var length = data.length;
+
+                    function loop() {
+                        geocodeAddress(data);
+                    }
+
+                    function markerCluster() {
+                        markerCluster = new MarkerClusterer(map, markers, {
+                            imagePath: baseUrl + 'm'
+                        });
+                        console.log('ok');
+                    }
+
+                    function geocodeAddress(data) {
+                        var address1 = data[8] ;
+                        geocoder.geocode({ 'address': address1 }, function (results, status) {
+                            //alert(status);
+                            if (status === google.maps.GeocoderStatus.OK) {
+                                createMarker(results[0].geometry.location, data);
+                                console.log(markers);
+                            } else {
+                                var lat = parseFloat(data[14]);
+                                var lng = parseFloat(data[13]);
+                                createMarker(new google.maps.LatLng(lat, lng), data);
+                                console.log(markers);
+                            }
+                        });
+                    }
+
+                    function createMarker(pos, data) {
+                        var address1 = data[8] ;
+                        var dataDirect = data[14] + '_' + data[13];
+                        var $marker_url2 = data[17];
+                        var icon = {
+                            url: $marker_url2,
+                            scaledSize: new google.maps.Size(50, 50), // scaled size
+                            origin: new google.maps.Point(0, 0), // origin
+                            anchor: new google.maps.Point(25, 70) // anchor
+                        }
+                        marker = new MarkerWithLabel({
+                            map: map,
+                            position: pos,
+                            animation: google.maps.Animation.DROP,
+                            icon: icon,
+                            labelContent: data[1],
+                            labelAnchor: new google.maps.Point('center', 'center'),
+                            labelClass: "labels-custom" + data[18] // the CSS class for the label
+                        });
+                        var spname1 = data[2];
+                        if (spname1 === '' || spname1 === null) {
+                            spname1 = data[1];
+                        }
+                        var contentString =
+                            "<div class='info'><div class='info__header'><div style='background-image: url(" +
+                                data[12] +
+                                ")' class='header__avatar'></div></div><div class='info__footer'><h1 class='name__main'>" +
+                                spname1 +
+                                "</h1><div class='info__footer__content'>";
+                        if (true) {
+                            contentString = contentString + "<div class='footer__content__add'>" + address1 + "</div>";
+                        }
+                        if (data[10] !== '' && data[10] !== null) {
+                            contentString = contentString + "<div class='footer__content__web'>" + data[10] + "</div>";
+                        }
+                        if (data[9] !== '' && data[9] !== null) {
+                            contentString = contentString + "<div class='footer__content__sdt'>" + data[9] + "</div>";
+                        }
+                        contentString = contentString + "<div class='button__wrap' onclick=saveData('" + dataDirect + "')>Chỉ đường</div>";
+                        var infowindow = new SnazzyInfoWindow({
+                            marker: marker,
+                            content: '<div id="iw_content">' + contentString + '</div>',
+                            maxWidth: 500,
+                            closeWhenOthersOpen: true
+                        });
+                        markers.push(marker);
+                        if ((markers.length) === length) {
+                            markerCluster();
+                        }
+                    }
+                    loop();
+
+                    if (markers.length > 0) {
+                        $('#input').val('yes');
+                    } else {
+
+                        $('#input').val('no');
+                    }
+                }
+            });
+        }
+    }
+    function ajax(pageNum, pageSize, url, txtAddress, nganhhang, distance, lat, lng, province, district, ward, addressUser) {
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                txtAddress: txtAddress,
+                province: province,
+                district: district,
+                ward: ward,
+                nganhhang: nganhhang,
+                distance: distance,
+                lat: lat,
+                lng: lng,
+                addressUser: addressUser,
+                pageNumber: pageNum,
+                pageSize: pageSize
+            },
+            dataType: 'JSON',
+            success: function (result) {
+                $("#listarr").empty();
+                $("#totalPage").empty();
+                $("#paged").empty();
+                $("#lengthList").empty();
+                var datashow = "";
+                var data = [];
+                result.RspList.forEach(function (element) {
+                    data.push(element);
+                });
+                var ttList = '';
+                if (nganhhang !== '') {
+                    ttList = $("#nganhhang option:selected").text() + ' - ' + result.indexList + ' điểm';
+                }
+                else { ttList = 'ĐIỂM BÁN - ' + result.indexList + ' điểm'; }
+                $('#lengthList').append(ttList);
+                var length1 = data.length;
+                console.log(result.length);
+                if (length1 > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        var j = i + 1;
+                        var dataDirect = "'" + data[i][14] + '_' + data[i][13] + "'";
+                        var dataSp = "'" + data[i][14] + '_' + data[i][13] + '_' + data[i][0] + "'";
+                        var spname = data[i][1];
+                        if (data[i][1] === '' || data[i][1] === null) {
+                            spname = data[i][3];
+                        }
+                        if (data[i][12] === '') {
+                            data[i][12] = '/Resources/website/images/nophoto.png';
+                        }
+                        datashow = datashow +
+                            '<table class="search-result__item">' +
+                            '<tr>' +
+                            '<td class="search-result__logo">' +
+                            '<a style="cursor: pointer;" onclick="showLocationPoint(' +
+                            dataSp +
+                            ')"><img src="' +
+                            data[i][12] +
+                            '"alt=""></a>' +
+                            '</td>' +
+                            '<td class="search-result__detail">' +
+                            '<div class="name">' +
+                            '<span class="name-number background-blue-dark color-white">' +
+                            j +
+                            '</span><a style="cursor: pointer;" onclick="showLocationPoint(' +
+                            dataSp +
+                            ')">' +
+                            spname +
+                            '</a></div>' +
+                            '<div class="adds">' +
+                            data[i][8] +
+                            '</div>';
+                        if (data[i][11] !== '' && data[i][11] !== null) {
+                            datashow = datashow +
+                                '<div class="text">' +
+                                data[i][11] +
+                                '</div>';
+                        }
+                        datashow = datashow + '<table class="info"><tr><td class="web">';
+                        if (data[i][10] !== '' && data[i][10] !== null) {
+                            datashow = datashow +
+                                '<a href="' +
+                                data[i][10] +
+                                '" target="_blank">' +
+                                '<img src="' +
+                                baseUrl +
+                                'globe.svg" width="16" alt="">' +
+                                data[i][10] +
+                                '</a>';
+                        }
+                        datashow = datashow +
+                            '</td>' +
+                            '<td class="web text-center">';
+                        if (data[i][9] !== '' && data[i][9] !== null) {
+                            datashow = datashow +
+                                '<a href="tel:' +
+                                data[i][9] +
+                                '" class="color-red">' +
+                                '<img src="' +
+                                baseUrl +
+                                'phone2.svg" width="16" alt="">' +
+                                data[i][9] +
+                                '</a>';
+                        }
+                        datashow = datashow +
+                            '</td>' +
+                            '<td class="web text-right">' +
+                            '<div href="" class="direction-btn color-blue" onclick="saveData(' +
+                            dataDirect +
+                            ')">' +
+                            '<img src="' +
+                            baseUrl +
+                            'pin.svg" width="16" alt="">Chỉ đường</div></td></tr></table></td></tr> </table>';
+                    }
+                    $(".lds-roller").empty();
+                    $("#listarr").append(datashow);
+                    PaggingTemplate2(result.TotalRow, pageNum);
+                    var mapOptions = {
+                        zoom: 10,
+                        center: new google.maps.LatLng(21.015638, 105.813959), // 22 lang ha
+                    };
+                    if (lat !== '' && long !== '') {
+                        mapOptions = {
+                            zoom: 10,
+                            center: new google.maps.LatLng(lat, long), // 22 lang ha
+                        };
+                    }
+                    var mapElement = document.getElementById('map');
+                    var map = new google.maps.Map(mapElement, mapOptions);
+
+                    // Let's also add a marker while we're at it
+                    var marker;
+                    var geocoder = new google.maps.Geocoder();
+                    var markers = [];
+                    var length = data.length;
+
+                    function loop() {
+                        for (i = 0; i < data.length; i++) {
+                            geocodeAddress(data[i]);
+                        };
+                    }
+
+                    function markerCluster() {
+                        markerCluster = new MarkerClusterer(map,
+                            markers,
+                            {
+                                imagePath: baseUrl + 'm'
+                            });
+
+                    }
+
+                    function geocodeAddress(data) {
+                        var address1 = data[8] ;
+                        geocoder.geocode({ 'address': address1 },
+                            function (results, status) {
+                                //alert(status);
+                                if (status == google.maps.GeocoderStatus.OK) {
+                                    createMarker(results[0].geometry.location, data);
+                                    console.log(markers);
+                                } else {
+                                    var lat = parseFloat(data[14]);
+                                    var lng = parseFloat(data[13]);
+                                    createMarker(new google.maps.LatLng(lat, lng), data);
+                                    console.log(markers);
+                                }
+                            });
+                    }
+
+                    function createMarker(pos, data) {
+                        var address1 = data[8];
+                        var dataDirect = data[14] + '_' + data[13];
+                        var $marker_url2 = data[17];
+                        var icon = {
+                            url: $marker_url2,
+                            scaledSize: new google.maps.Size(50, 50), // scaled size
+                            origin: new google.maps.Point(0, 0), // origin
+                            anchor: new google.maps.Point(25, 70) // anchor
+                        }
+                        marker = new MarkerWithLabel({
+                            map: map,
+                            position: pos,
+                            animation: google.maps.Animation.DROP,
+                            icon: icon,
+                            labelContent: data[1],
+                            labelAnchor: new google.maps.Point('center', 'center'),
+                            labelClass: "labels-custom" + data[18] // the CSS class for the label
+                        });
+                        var spname1 = data[2];
+                        if (spname1 === '' || spname1 === null) {
+                            spname1 = data[1];
+                        }
+                        var contentString =
+                            "<div class='info'><div class='info__header'><div style='background-image: url(" +
+                                data[12] +
+                                ")' class='header__avatar'></div></div><div class='info__footer'><h1 class='name__main'>" +
+                                spname1 +
+                                "</h1><div class='info__footer__content'>";
+                        if (true) {
+                            contentString = contentString + "<div class='footer__content__add'>" + address1 + "</div>";
+                        }
+                        if (data[10] !== '' && data[10] !== null) {
+                            contentString = contentString + "<div class='footer__content__web'>" + data[10] + "</div>";
+                        }
+                        if (data[9] !== '' && data[9] !== null) {
+                            contentString = contentString + "<div class='footer__content__sdt'>" + data[9] + "</div>";
+                        }
+                        contentString =
+                            contentString +
+                            "<div class='button__wrap' onclick=saveData('" +
+                            dataDirect +
+                            "')>Chỉ đường</div>";
+                        var infowindow = new SnazzyInfoWindow({
+                            marker: marker,
+                            content: '<div id="iw_content">' + contentString + '</div>',
+                            maxWidth: 500,
+                            closeWhenOthersOpen: true
+                        });
+                        markers.push(marker);
+                        if ((markers.length) === length) {
+                            markerCluster();
+                        }
+                    }
+
+                    loop();
+
+                    if (markers.length > 0) {
+                        $('#input').val('yes');
+                    } else {
+
+                        $('#input').val('no');
+                    }
+                } else {
+                    $(".lds-roller").empty();
+                    $("#listarr").append('<div style="font-size: 20px;color:red">Không có bản ghi nào phù hợp yêu cầu tìm kiếm của bạn</div>');
+                }
+            }
+        });
+    }
+    // load province
+    $(document).ready(function () { $.ajax({ type: "POST", url: '@Url.Action("ListProvince")', dataType: "json", data: {}, success: function (states) { $.each(states, function (i, state) { $("#province").append("<option value=\"" + state.Value + "\">" + state.Text + "</option>") }) }, error: function (ex) { } }) });
+    //load district
+    $(document).ready(function() {
+        $("#province").change(function () {
+            $('#district').find('option').remove();
+            var provinceName = $("#province").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ListDistrict")',
+                dataType: "json",
+                data: {
+                    provinceName: provinceName
+                },
+                success: function (states) {
+                    $("#district").append("<option selected value=\"0\">Quận/Huyện</option>");
+                    $("#district").val("0").trigger("change");
+                    $.each(states,
+                        function(i, state) {
+                            $("#district").append("<option value=\"" + state.Value + "\">" + state.Text + "</option>");
+                        });
+                },
+                error: function(ex) {}
+            });
+        });
+    });
+    // Search with
+    function GetPageDataType2(pageNum, pageSize) {
+    	$("#listarr").empty();
+    	$("#totalPage").empty();
+    	$("#paged").empty();
+    	$("#lengthList").empty();
+    	var nganhhang = $('#nganhhang').val();
+    	nganhhang = (nganhhang === 'all') ? '' : nganhhang;
+    	var distance = $('#distance').val();
+    	var txtAddress = $('#txtAddress').val();
+    	if(txtAddress !== null && txtAddress !== '') {
+    		var txtAddress1 = $('#txtAddress').val();
+    		var url = '@Url.Action("GetSearchLocationAdd", "Home")';
+    		var geocoder1 = new google.maps.Geocoder();
+    		lat = '';
+    		long = '';
+    		geocoder1.geocode({
+    			'address': txtAddress1
+    		}, function(results, status) {
+    			if(status === google.maps.GeocoderStatus.OK) {
+    				lat = results[0].geometry.location.lat();
+    				long = results[0].geometry.location.lng();
+    				latlong1 = new google.maps.LatLng(lat, long);
+    				setTimeout(geocoder1.geocode({
+    					'location': latlong1
+    				}, function(results, status) {
+    					if(status === 'OK') {
+    						var addressUser = '';
+    						var provinceUser = '';
+    						var districtUser = '';
+                            var wardUser = '';
+                            console.log(results[0].address_components);
+                            $.each(results[0].address_components, function (index, value) {
+    							if(value.types[0] === 'premise') {
+							        addressUser = value.long_name;
+							    }
+    							if(value.types[0] === 'neighborhood') {
+							        addressUser = value.long_name;
+							    }
+    							if(value.types[0] === 'sublocality') {
+							        addressUser = value.long_name;
+							    }
+    							if(value.types[0] === 'route') {
+							        wardUser = value.long_name;
+							    }
+                                if (value.types[0] === 'administrative_area_level_3') {
+							        wardUser = value.long_name;
+							    }
+    							if(value.types[0] === 'administrative_area_level_2') {
+							        districtUser = value.long_name;
+							    }
+    							if(value.types[0] === 'administrative_area_level_1') {
+							        provinceUser = value.long_name;
+							    }
+                            });
+
+    						if(results[0]) {
+    							ajax(pageNum, pageSize, url, addressUser, nganhhang, distance, lat, long, provinceUser, districtUser, wardUser, txtAddress1)
+    						} else {
+    							window.alert('không có địa chỉ nào phù hợp')
+    						}
+    					} else {
+    						ajax(pageNum, pageSize, url, '', nganhhang, distance, lat, long, '', '', '', txtAddress1)
+    					}
+    				}), 100)
+    			} else {
+    				ajax(pageNum, pageSize, url, '', nganhhang, distance, '', '', '', '', '', txtAddress1)
+    			}
+    		})
+    	} else {
+    		if(lat !== '' && long !== '') {
+    			latlong1 = new google.maps.LatLng(lat, long);
+    			var geocoder2 = new google.maps.Geocoder();
+    			var url1 = '@Url.Action("GetSearchLocation", "Home")';
+    			setTimeout(geocoder2.geocode({
+    				'location': latlong1
+    			}, function(results, status) {
+    				if(status === 'OK') {
+    					var addressUser = '';
+    					var provinceUser = '';
+    					var districtUser = '';
+    					var wardUser = '';
+    					$.each(results[0].address_components, function(index, value) {
+    						if(value.types[0] === 'premise') {
+                                addressUser = value.long_name;
+						    }
+    						if(value.types[0] === 'neighborhood') {
+						        addressUser = value.long_name;
+						    }
+    						if(value.types[0] === 'sublocality') {
+						        addressUser = value.long_name;
+						    }
+    						if(value.types[0] === 'route') {
+                                wardUser = value.long_name;
+						    }
+    						if(value.types[0] === 'administrative_area_level_3') {
+						        wardUser = value.long_name;
+						    }
+    						if(value.types[0] === 'administrative_area_level_2') {
+						        districtUser = value.long_name;
+						    }
+    						if(value.types[0] === 'administrative_area_level_1') {
+						        provinceUser = value.long_name;
+						    }
+    					});
+    					if(results[0]) {
+    						ajax(pageNum, pageSize, url1, addressUser, nganhhang, distance, lat, long, provinceUser, districtUser, wardUser, '')
+    					} else {
+					        window.alert('không có địa chỉ nào phù hợp');
+					    }
+    				} else {
+    					ajax(pageNum, pageSize, url1, '', nganhhang, distance, lat, long, '', '', '', '')
+    				}
+    			}), 100)
+    		} else {
+    			var url2 = '@Url.Action("GetSearchAllLocation", "Home")';
+    			ajax(pageNum, pageSize, url2, '', nganhhang, 0, '', '', '', '', '', '')
+    		}
+    	}
+    }
+    function GetPageDataType1(pageNum, pageSize) {
+        var tradeMartParent ='';
+        var tradeMartChild = '';
+        var spTmName = '';
+        var province = '';
+        var district = '';
+        var txtname = '';
+        tradeMartParent = $("#tradeMartParent").val();
+        tradeMartChild = $("#tradeMartChild").val();
+        spTmName = $("#SpTmName").val();
+        province = $("#province").val();
+        district = $("#district").val();
+        txtname = $("#txtname").val();
+        district = district.substr(5, district.length);
+        var url = '@Url.Action("GetSearchType1", "Home")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                tradeMartParent: tradeMartParent,
+                tradeMartChild: tradeMartChild,
+                spTmName: spTmName,
+                province: province,
+                district: district,
+                txtname: txtname,
+                pageNumber: pageNum,
+                pageSize: pageSize
+            },
+            dataType: 'JSON',
+            success: function (result) {
+                $("#listarr").empty();
+                $("#totalPage").empty();
+                $("#paged").empty();
+                $("#lengthList").empty();
+                var datashow = "";
+                var data = [];
+                result.RspList.forEach(function (element) {
+                    data.push(element);
+                });
+                var ttList = '';
+                if (tradeMartParent!=='0') {
+                    if (tradeMartChild !== '0') {
+                        ttList = $("#tradeMartChild option:selected").text() + ' - ' + result.indexList + ' điểm';
+                    } else {
+                        ttList = $("#tradeMartParent option:selected").text() + ' - ' + result.indexList + ' điểm';
+                    }
+                }
+                else { ttList = 'ĐIỂM BÁN - ' + result.indexList + ' điểm'; }
+                $('#lengthList').append(ttList);
+                var length1 = data.length;
+                if (length1 > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        var j = i + 1;
+                        var dataDirect = "'" + data[i][14] + '_' + data[i][13] + "'";
+                        var dataSp = "'" + data[i][14] + '_' + data[i][13] + '_' + data[i][0] + "'";
+                        var spname = data[i][1];
+                        if (data[i][1] === '' || data[i][1] === null) {
+                            spname = data[i][3];
+                        }
+                        if (data[i][12] === '') {
+                            data[i][12] = '/Resources/website/images/nophoto.png';
+                        }
+                        datashow = datashow +
+                            '<table class="search-result__item">' +
+                            '<tr>' +
+                            '<td class="search-result__logo">' +
+                            '<a style="cursor: pointer;" onclick="showLocationPoint(' +
+                            dataSp +
+                            ')"><img src="' +
+                            data[i][12] +
+                            '"alt=""></a>' +
+                            '</td>' +
+                            '<td class="search-result__detail">' +
+                            '<div class="name">' +
+                            '<span class="name-number background-blue-dark color-white">' +
+                            j +
+                            '</span><a style="cursor: pointer;" onclick="showLocationPoint(' +
+                            dataSp +
+                            ')">' +
+                            spname +
+                            '</a></div>' +
+                            '<div class="adds">' +
+                            data[i][8] +
+                            '</div>';
+                        if (data[i][11] !== '' && data[i][11] !== null) {
+                            datashow = datashow +
+                                '<div class="text">' +
+                                data[i][11] +
+                                '</div>';
+                        }
+                        datashow = datashow + '<table class="info"><tr><td class="web">';
+                        if (data[i][10] !== '' && data[i][10] !== null) {
+                            datashow = datashow +
+                                '<a href="' +
+                                data[i][10] +
+                                '" target="_blank">' +
+                                '<img src="' +
+                                baseUrl +
+                                'globe.svg" width="16" alt="">' +
+                                data[i][10] +
+                                '</a>';
+                        }
+                        datashow = datashow +
+                            '</td>' +
+                            '<td class="web text-center">';
+                        if (data[i][9] !== '' && data[i][9] !== null) {
+                            datashow = datashow +
+                                '<a href="tel:' +
+                                data[i][9] +
+                                '" class="color-red">' +
+                                '<img src="' +
+                                baseUrl +
+                                'phone2.svg" width="16" alt="">' +
+                                data[i][9] +
+                                '</a>';
+                        }
+                        datashow = datashow +
+                            '</td>' +
+                            '<td class="web text-right">' +
+                            '<div href="" class="direction-btn color-blue" onclick="saveData(' +
+                            dataDirect +
+                            ')">' +
+                            '<img src="' +
+                            baseUrl +
+                            'pin.svg" width="16" alt="">Chỉ đường</div></td></tr></table></td></tr> </table>';
+                    }
+                    $(".lds-roller").empty();
+                    $("#listarr").append(datashow);
+                    PaggingTemplate1(result.TotalRow, pageNum);
+                    var geocoder1 = new google.maps.Geocoder();
+                   var mapOptions = {
+                        zoom: 10,
+                        center: new google.maps.LatLng(21.015638, 105.813959) // 22 lang ha
+                    };
+                    if (lat !== '' && long !== '') {
+                         mapOptions = {
+                            zoom: 10,
+                            center: new google.maps.LatLng(lat, long) // 22 lang ha
+                    };
+                    }
+                    var mapElement = document.getElementById('map');
+                    var map = new google.maps.Map(mapElement, mapOptions);
+                    var add1 = province;
+                    console.log(add1);
+                    if (add1 !== '0') {
+                        add1 = add1 + ', Việt nam';
+                        if (district !== '') {
+                            add1 = district + ', ' + province + ', Việt nam';
+                        }
+                        geocoder1.geocode({ 'address': add1 },
+                            function(results, status) {
+                                if (status === google.maps.GeocoderStatus.OK) {
+                                   var lat2 = results[0].geometry.location.lat();
+                                   var long2 = results[0].geometry.location.lng();
+                                    console.log(lat + '-' + long);
+                                    map.setCenter(new google.maps.LatLng(lat2, long2));
+                                }
+                            });
+                    } else {
+                        map.setCenter(new google.maps.LatLng(21.015638, 105.813959));
+                    }
+                    // Let's also add a marker while we're at it
+                    var marker;
+                    var geocoder = new google.maps.Geocoder();
+                    var markers = [];
+                    var length = data.length;
+
+                    function loop() {
+                        for (i = 0; i < data.length; i++) {
+                            geocodeAddress(data[i]);
+                        };
+                    }
+
+                    function markerCluster() {
+                        markerCluster = new MarkerClusterer(map,
+                            markers,
+                            {
+                                imagePath: baseUrl + 'm'
+                            });
+                        console.log('ok');
+                    }
+
+                    function geocodeAddress(data) {
+                        var address1 = data[8] ;
+                        geocoder.geocode({ 'address': address1 },
+                            function (results, status) {
+                                //alert(status);
+                                if (status == google.maps.GeocoderStatus.OK) {
+                                    createMarker(results[0].geometry.location, data);
+                                    console.log(markers);
+                                } else {
+                                    var lat = parseFloat(data[14]);
+                                    var lng = parseFloat(data[13]);
+                                    createMarker(new google.maps.LatLng(lat, lng), data);
+                                    console.log(markers);
+                                }
+                            });
+                    }
+
+                    function createMarker(pos, data) {
+                        var address1 = data[8] ;
+                        var dataDirect = data[14] + '_' + data[13];
+                        var $marker_url2 = data[17];
+                        var icon = {
+                            url: $marker_url2,
+                            scaledSize: new google.maps.Size(50, 50), // scaled size
+                            origin: new google.maps.Point(0, 0), // origin
+                            anchor: new google.maps.Point(25, 70) // anchor
+                        }
+                        marker = new MarkerWithLabel({
+                            map: map,
+                            position: pos,
+                            animation: google.maps.Animation.DROP,
+                            icon: icon,
+                            labelContent: data[1],
+                            labelAnchor: new google.maps.Point('center', 'center'),
+                            labelClass: "labels-custom" + data[18] // the CSS class for the label
+                        });
+                        var spname1 = data[2];
+                        if (spname1 === '' || spname1 === null) {
+                            spname1 = data[1];
+                        }
+                        var contentString =
+                            "<div class='info'><div class='info__header'><div style='background-image: url(" +
+                                data[12] +
+                                ")' class='header__avatar'></div></div><div class='info__footer'><h1 class='name__main'>" +
+                                spname1 +
+                                "</h1><div class='info__footer__content'>";
+                        if (true) {
+                            contentString = contentString + "<div class='footer__content__add'>" + address1 + "</div>";
+                        }
+                        if (data[10] !== '' && data[10] !== null) {
+                            contentString = contentString + "<div class='footer__content__web'>" + data[10] + "</div>";
+                        }
+                        if (data[9] !== '' && data[9] !== null) {
+                            contentString = contentString + "<div class='footer__content__sdt'>" + data[9] + "</div>";
+                        }
+                        contentString =
+                            contentString +
+                            "<div class='button__wrap' onclick=saveData('" +
+                            dataDirect +
+                            "')>Chỉ đường</div>";
+                        var infowindow = new SnazzyInfoWindow({
+                            marker: marker,
+                            content: '<div id="iw_content">' + contentString + '</div>',
+                            maxWidth: 500,
+                            closeWhenOthersOpen: true
+                        });
+                        markers.push(marker);
+                        if ((markers.length) === length) {
+                            markerCluster();
+                        }
+                    }
+
+                    loop();
+
+                    if (markers.length > 0) {
+                        $('#input').val('yes');
+                    } else {
+
+                        $('#input').val('no');
+                    }
+                } else {
+                    $(".lds-roller").empty();
+                    var geocoder2 = new google.maps.Geocoder();
+                    var mapOptions2 = {
+                        zoom: 10,
+                        center: new google.maps.LatLng(21.015638, 105.813959) // 22 lang ha
+                    };
+                    if (lat !== '' && long !== '') {
+                        mapOptions2 = {
+                            zoom: 10,
+                            center: new google.maps.LatLng(lat, long) // 22 lang ha
+                        };
+                    }
+                    var mapElement1 = document.getElementById('map');
+                    var map1 = new google.maps.Map(mapElement1, mapOptions2);
+                    var add2 = province;
+                    console.log(add2);
+                    if (add2 !== '0') {
+                        add2 = add2 + ', Việt nam';
+                        if (district !== '') {
+                            add2 = district + ', ' + province + ', Việt nam';
+                        }
+                        geocoder2.geocode({ 'address': add2 },
+                            function(results, status) {
+                                if (status === google.maps.GeocoderStatus.OK) {
+                                   var lat1 = results[0].geometry.location.lat();
+                                   var long1 = results[0].geometry.location.lng();
+                                    console.log(lat + '-' + long);
+                                    map1.setCenter(new google.maps.LatLng(lat1, long1));
+                                }
+                            });
+                    } else {
+                        map1.setCenter(new google.maps.LatLng(21.015638, 105.813959));
+                    }
+                    $("#listarr").append('<div style="font-size: 20px;color:red">Không có bản ghi nào phù hợp yêu cầu tìm kiếm của bạn</div>');
+                }
+            }
+        });
+    }
+    //Get address textbox
+    $("#getAddLocation").click(function() {
+        var geocoder3 = new google.maps.Geocoder();
+        if(lat !== '' && long !== '') {
+            console.log(lat + '-' + long);
+            latlong1 = new google.maps.LatLng(lat, long);
+            setTimeout(geocoder3.geocode({
+                        'location': latlong1
+                    },
+                    function(results, status) {
+                        if (status === 'OK') {
+                            $("#txtAddress").attr('value', results[0].formatted_address);
+                            console.log(results);
+                            console.log(results[0].formatted_address);
+                        }
+                    }),
+                1000);
+        } else {
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition)
+            } else {
+                console.error('Geolocation is not supported by this browser.')
+            }
+        }
+    });
+    // Phân trang
+    function PaggingTemplate1(totalPage, currentPage) { var pageNumberArray = Array(); var totalPages = totalPage; var countIncr = 1; for (var i = currentPage; i <= totalPage; i++) { pageNumberArray[0] = currentPage; if (totalPage !== currentPage && pageNumberArray[countIncr - 1] !== totalPage) { pageNumberArray[countIncr] = i + 1 } countIncr++ }; pageNumberArray = pageNumberArray.slice(0, 5); var forwardOne = 1; if (totalPage !== currentPage) { forwardOne = currentPage + 1 } var backwardOne = 1; if (currentPage > 1) { backwardOne = currentPage - 1 } var template = '<div class="page page-back" onclick="GetPageDataType1(' + backwardOne + ')"><img src="/Resources/website/images/arrow-left.svg" width="14" alt=""></div>'; var numberingLoop = ""; for (var i = 0; i < pageNumberArray.length; i++) { if (currentPage === pageNumberArray[i]) { numberingLoop = numberingLoop + ' <div class="page page-current" onclick="GetPageDataType1(' + pageNumberArray[i] + ')">' + pageNumberArray[i] + '</div>' } else { numberingLoop = numberingLoop + ' <div class="page" onclick="GetPageDataType1(' + pageNumberArray[i] + ')">' + pageNumberArray[i] + '</div>' } } template = template + numberingLoop + '<div class="page page-next" onclick="GetPageDataType1(' + forwardOne + ')"><img src="/Resources/website/images/arrow-right.svg" width="14" alt=""></div>'; var tt = "<p>" + currentPage + " / " + totalPages + " trang</p>"; $("#totalPage").append(tt); $("#paged").append(template); $('#selectedId').change(function () { GetPageDataType1(1, $(this).val()) }) }
+    function PaggingTemplate2(totalPage, currentPage) { var pageNumberArray = Array(); var totalPages = totalPage; var countIncr = 1; for (var i = currentPage; i <= totalPage; i++) { pageNumberArray[0] = currentPage; if (totalPage !== currentPage && pageNumberArray[countIncr - 1] !== totalPage) { pageNumberArray[countIncr] = i + 1 } countIncr++ }; pageNumberArray = pageNumberArray.slice(0, 5); var forwardOne = 1; if (totalPage !== currentPage) { forwardOne = currentPage + 1 } var backwardOne = 1; if (currentPage > 1) { backwardOne = currentPage - 1 } var template = '<div class="page page-back" onclick="GetPageDataType2(' + backwardOne + ')"><img src="/Resources/website/images/arrow-left.svg" width="14" alt=""></div>'; var numberingLoop = ""; for (var i = 0; i < pageNumberArray.length; i++) { if (currentPage === pageNumberArray[i]) { numberingLoop = numberingLoop + ' <div class="page page-current" onclick="GetPageDataType2(' + pageNumberArray[i] + ')">' + pageNumberArray[i] + '</div>' } else { numberingLoop = numberingLoop + ' <div class="page" onclick="GetPageDataType2(' + pageNumberArray[i] + ')">' + pageNumberArray[i] + '</div>' } } template = template + numberingLoop + '<div class="page page-next" onclick="GetPageDataType2(' + forwardOne + ')"><img src="/Resources/website/images/arrow-right.svg" width="14" alt=""></div>'; var tt = "<p>" + currentPage + " / " + totalPages + " trang</p>"; $("#totalPage").append(tt); $("#paged").append(template); $('#selectedId').change(function () { GetPageDataType2(1, $(this).val()) }) }
+    //Load SpTmName
+    $(document).ready(function() {
+        $("#tradeMartParent").change(function () {
+            $('#SpTmName').find('option').remove();
+            var parentid = $("#tradeMartParent").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ListTmName1")',
+                dataType: "json",
+                data: {
+                    parentid: parentid
+                },
+                success: function (states) {
+                    $("#SpTmName").append("<option selected value=\"0\">Thương Hiệu</option>");
+                    $("#SpTmName").val("0").trigger("change");
+                    $.each(states,
+                        function(i, state) {
+                            $("#SpTmName").append("<option value=\"" + state.Value + "\">" + state.Text + "</option>");
+                        });
+                },
+                error: function(ex) {}
+            });
+        });
+    });
+    $(document).ready(function() {
+        $("#tradeMartChild").change(function() {
+            var e = $("#tradeMartChild").val();
+            if (e !== '0') {
+                $("#SpTmName").find("option").remove();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ListTmName1")',
+                    dataType: "json",
+                    data: {
+                        parentid: e
+                    },
+                    success: function (states) {
+                        $("#SpTmName").append('<option selected value="0">Thương Hiệu</option>');
+                        $("#SpTmName").val("0").trigger("change");
+                        $.each(states,
+                            function(i, state) {
+                                //var desired = state.Value.replace(/[`~!@@#$%^&*()_|+\-=?;:'"",.<>\{\}\[\]\\\/]/gi, '');
+                                $("#SpTmName").append("<option value=\"" + state.Value + "\">" + state.Text + "</option>");
+                    });
+                    //var exist = {};
+                    //$("#SpTmName option").each(function () {
+                    //    if (exist[$(this).val()])
+                    //        $(this).remove();
+                    //    else
+                    //        exist[$(this).val()] = true;
+                    //});
+                },
+                error: function(t) {
+                    console.log("Failed to retrieve states." + t);
+                }
+                });
+                }
+        });
+
+    });
+    $(document).ready(function(){return $.ajax({type:"POST",url:'@Url.Action("Listparent")',dataType:"json",data:{},success:function(n){$.each(n,function(l,e){$("#nganhhang").append('<option value="'+e.Value+'">'+e.Text+"</option>")})},error:function(n){console.log("Failed to retrieve states."+n)}}),!1});
+    //Load Danh mục 1
+    $(document).ready(function() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Listparent")',
+            dataType: "json",
+            data: {},
+            success: function(t) {
+                $.each(t,
+                    function(n, e) {
+                        $("#tradeMartParent").append('<option value="' + e.Value + '">' + e.Text + "</option>");
+                    });
+            },
+            error: function(o) {
+                console.log("Failed to retrieve states." + o);
+            }
+        }), $("#tradeMartParent").change(function() {
+            $("#tradeMartChild").find("option").remove();
+            var t = $("#tradeMartParent").val();
+            "" !== t &&
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ListTmChild")',
+                    dataType: "json",
+                    data: {
+                        parentid: t
+                    },
+                    success: function(a) {
+                        console.log(a), null != a &&
+                        ($("#tradeMartChild").append('<option selected value="0">Danh mục con</option>'),
+                            $("#tradeMartChild").val("0").trigger("change"), $.each(a,
+                                function(o, e) {
+                                    $("#tradeMartChild")
+                                        .append('<option value="' + e.Value + '">' + e.Text + "</option>");
+                                    }));
+                        var exist = {};
+                        $("#tradeMartChild option").each(function () {
+                            if (exist[$(this).val()])
+                                $(this).remove();
+                            else
+                                exist[$(this).val()] = true;
+                        });
+                    },
+                    error: function(f) {
+                        alert("Failed to retrieve states." + f);
+                    }
+                });
+        });
+    });
+    $(document).ready(function () { $('.header-back').on('click', function () { $('#search-result__direction').css('display', 'none'); $('#result-panel').css('display', 'block') }) });
+    // txtAddress txtname
+    $('#txtAddress').bind('keypress', function (event) { var regex = new RegExp("^[^/\\()~!#$%^&*@@;''{}:]+$"); var key = String.fromCharCode(!event.charCode ? event.which : event.charCode); if (!regex.test(key)) { event.preventDefault(); return false } });
+    $('#txtname').bind('keypress', function (event) { var regex = new RegExp("^[^/\\()~!#$%^&*@@;''{}:]+$"); var key = String.fromCharCode(!event.charCode ? event.which : event.charCode); if (!regex.test(key)) { event.preventDefault(); return false } });
+    $(document).ready(function () { $('#form1').validate({ rules: { txtAddress: { maxlength: 300 } }, messages: { txtAddress: { maxlength: "Địa chỉ có độ dài từ 1 – 300 ký tự" } } }) });
+</script>
+<script type="text/javascript">
+    $("#popup").click(function () {
+        $.validator.addMethod("regxEmail", function (value, element, regexpr) {
+            return regexpr.test(value)
+        }, 'Địa chỉ email không đúng định dạng');
+        $.validator.addMethod("regxName", function (value, element, regexpr) {
+            return regexpr.test(value)
+        }, 'Họ và tên không hợp lệ!');
+        $.validator.addMethod("regxPhone", function (value, element, regexpr) {
+            return regexpr.test(value)
+        }, 'Số điện thoại không hợp lệ!');
+        var rnemail = document.getElementById('RnEmail').value;
+        var rnphone = document.getElementById('RnPhone').value;
+        if (rnphone == '' && rnemail == '') {
+            $("#receivenewsform").validate({
+                rules: {
+                    RnName: {
+                        required: false,
+                    },
+                    RnEmail: {
+                        required: false,
+                    }
+                },
+                messages: {
+                    RnName: {
+                        required: "Vui lòng nhập Họ và Tên!",
+                    },
+                    RnEmail: {
+                        required: "Vui lòng nhập Email!",
+                    },
+                },
+            });
+            var postData = $("#receivenewsform").serialize();
+            var submitUrl = $("#receivenewsform").attr("action");
+            $.ajax({
+                type: "POST",
+                url: submitUrl,
+                data: postData,
+                dataType: 'JSON',
+                success: function (x) {
+                    if (x.code == '01') {
+                        alert("Thông tin đăng ký không hợp lệ! Bạn cần nhập đầy đủ thông tin đăng ký, không được bỏ trống!")
+                    }
+                    location.reload()
+                }
+            });
+            return false
+        } else if (rnemail == '' && rnphone != '') {
+            $("#receivenewsform").validate({
+                rules: {
+                    RnName: {
+                        required: true,
+                        regxName: /[a-zA-z]+$/,
+                        minlength: 2,
+                        maxlength: 200
+                    },
+                    RnPhone: {
+                        required: {
+                            depends: function () {
+                                $(this).val($.trim($(this).val()));
+                                return true
+                            },
+                        },
+                        regxPhone: /^\d{10,12}$/,
+                        minlength: 10,
+                        maxlength: 12
+                    },
+                },
+                messages: {
+                    RnName: {
+                        required: "Vui lòng nhập Họ và Tên!",
+                        regxName: "Họ và tên không hợp lệ!",
+                        minlength: "Họ và Tên không hợp lệ!",
+                        maxlength: "Họ và Tên không hợp lệ!"
+                    },
+                    RnPhone: {
+                        required: "Vui lòng nhập số điện thoại!",
+                        regxPhone: "Số điện thoại không hợp lệ!",
+                        minlength: "Số điện thoại không hợp lệ!",
+                        maxlength: "Số điện thoại không hợp lệ!"
+                    },
+                },
+                submitHandler: function (form) {
+                    var postData = $("#receivenewsform").serialize();
+                    var submitUrl = $("#receivenewsform").attr("action");
+                    $.ajax({
+                        type: "POST",
+                        url: submitUrl,
+                        data: postData,
+                        dataType: 'JSON',
+                        success: function (x) {
+                            if (x.code == '00') {
+                                alert("Chân thành cảm ơn quý khách đã liên hệ chúng tôi, VNPAY-QR sẽ gửi thông tin các chương trình khuyến mại tới email của quý khách")
+                            }
+                            if (x.code == '02') {
+                                alert("Địa chỉ email và số điện thoại đã được đăng ký")
+                            }
+                            if (x.code == '03') {
+                                alert("Số điện thoại đã được đăng ký")
+                            }
+                            if (x.code == '01') {
+                                alert("Thông tin đăng ký không hợp lệ! Bạn cần nhập đầy đủ thông tin đăng ký, không được bỏ trống!")
+                            }
+                            if (x.code == '99') {
+                                alert("Đăng ký thất bại. Quý khách vui lòng thử lại!")
+                            }
+                            location.reload()
+                        }
+                    });
+                    return false
+                }
+            })
+        } else if (rnemail != '' && rnphone == '') {
+            $("#receivenewsform").validate({
+                rules: {
+                    RnName: {
+                        required: true,
+                        regxName: /[a-zA-z]+$/,
+                        minlength: 2,
+                        maxlength: 200
+                    },
+                    RnEmail: {
+                        required: {
+                            depends: function () {
+                                $(this).val($.trim($(this).val()));
+                                return true
+                            },
+                        },
+                        regxEmail: /^([a-zA-Z0-9_\.\-])+\@@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
+                        minlength: 4,
+                        maxlength: 200
+                    }
+                },
+                messages: {
+                    RnName: {
+                        required: "Vui lòng nhập Họ và Tên!",
+                        regxName: "Họ và tên không hợp lệ!",
+                        minlength: "Họ và Tên không hợp lệ!",
+                        maxlength: "Họ và Tên không hợp lệ!"
+                    },
+                    RnEmail: {
+                        required: "Vui lòng nhập Email!",
+                        regxEmail: "Địa chỉ email không đúng định dạng!",
+                        minlength: "Email không hợp lệ!",
+                        maxlength: "Email không hợp lệ!"
+                    },
+                },
+                submitHandler: function (form) {
+                    var postData = $("#receivenewsform").serialize();
+                    var submitUrl = $("#receivenewsform").attr("action");
+                    $.ajax({
+                        type: "POST",
+                        url: submitUrl,
+                        data: postData,
+                        dataType: 'JSON',
+                        success: function (x) {
+                            if (x.code == '00') {
+                                alert("Chân thành cảm ơn quý khách đã liên hệ chúng tôi, VNPAY-QR sẽ gửi thông tin các chương trình khuyến mại tới email của quý khách")
+                            }
+                            if (x.code == '02') {
+                                alert("Địa chỉ email và số điện thoại đã được đăng ký")
+                            }
+                            if (x.code == '04') {
+                                alert("Địa chỉ email đã được đăng ký")
+                            }
+                            if (x.code == '01') {
+                                alert("Thông tin đăng ký không hợp lệ! Bạn cần nhập đầy đủ thông tin đăng ký, không được bỏ trống!")
+                            }
+                            if (x.code == '99') {
+                                alert("Đăng ký thất bại. Quý khách vui lòng thử lại!")
+                            }
+                            location.reload()
+                        }
+                    });
+                    return false
+                }
+            })
+        } else {
+            $("#receivenewsform").validate({
+                rules: {
+                    RnName: {
+                        required: true,
+                        regxName: /[a-zA-z]+$/,
+                        minlength: 2,
+                        maxlength: 200
+                    },
+                    RnPhone: {
+                        required: {
+                            depends: function () {
+                                $(this).val($.trim($(this).val()));
+                                return true
+                            },
+                        },
+                        regxPhone: /^\d{10,12}$/,
+                        minlength: 10,
+                        maxlength: 12
+                    },
+                    RnEmail: {
+                        required: {
+                            depends: function () {
+                                $(this).val($.trim($(this).val()));
+                                return true
+                            },
+                        },
+                        regxEmail: /^([a-zA-Z0-9_\.\-])+\@@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
+                        minlength: 4,
+                        maxlength: 200
+                    }
+                },
+                messages: {
+                    RnName: {
+                        required: "Vui lòng nhập Họ và Tên!",
+                        regxName: "Họ và tên không hợp lệ!",
+                        minlength: "Họ và Tên không hợp lệ!",
+                        maxlength: "Họ và Tên không hợp lệ!"
+                    },
+                    RnPhone: {
+                        required: "Vui lòng nhập số điện thoại!",
+                        regxPhone: "Số điện thoại không hợp lệ!",
+                        minlength: "Số điện thoại không hợp lệ!",
+                        maxlength: "Số điện thoại không hợp lệ!"
+                    },
+                    RnEmail: {
+                        required: "Vui lòng nhập Email!",
+                        regxEmail: "Địa chỉ email không đúng định dạng!",
+                        minlength: "Email không hợp lệ!",
+                        maxlength: "Email không hợp lệ!"
+                    },
+                },
+                submitHandler: function (form) {
+                    var postData = $("#receivenewsform").serialize();
+                    var submitUrl = $("#receivenewsform").attr("action");
+                    $.ajax({
+                        type: "POST",
+                        url: submitUrl,
+                        data: postData,
+                        dataType: 'JSON',
+                        success: function (x) {
+                            if (x.code == '00') {
+                                alert("Chân thành cảm ơn quý khách đã liên hệ chúng tôi, VNPAY-QR sẽ gửi thông tin các chương trình khuyến mại tới email của quý khách")
+                            }
+                            if (x.code == '02') {
+                                alert("Địa chỉ email và số điện thoại đã được đăng ký")
+                            }
+                            if (x.code == '01') {
+                                alert("Thông tin đăng ký không hợp lệ! Bạn cần nhập đầy đủ thông tin đăng ký, không được bỏ trống!")
+                            }
+                            if (x.code == '99') {
+                                alert("Đăng ký thất bại. Quý khách vui lòng thử lại!")
+                            }
+                            if (x.code == '03') {
+                                alert("Số điện thoại đã được đăng ký!")
+                            }
+                            if (x.code == '04') {
+                                alert("Địa chỉ email đã được đăng ký!")
+                            }
+                            location.reload()
+                        }
+                    });
+                    return false
+                }
+            })
+        }
+    });
+</script>

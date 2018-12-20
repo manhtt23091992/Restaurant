@@ -1,0 +1,304 @@
+﻿@model PromotionCMS.Models.PROGRAM
+@{
+    ViewBag.Title = "Chi tiết thông tin chương trình khuyến mại";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    .no_checkbox > i.jstree-checkbox {
+        display: none;
+    }
+</style>
+<div class="main-content">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý Chương Trình Khuyến Mại</li>
+            <li>Chi tiết thông tin chương trình khuyến mại</li>
+        </ul>
+        <!-- /.breadcrumb -->
+        @*<div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Chi tiết thông tin chương trình khuyến mại</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-12" id="errorProgram">
+                </div>
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error ">@TempData["Message"]</span>
+                    </div>
+                }
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <form class="form-horizontal" id="form" role="form" action="" method="POST">
+                        <input type="hidden" id="PgId" name="PgId" value="@Model.PG_ID" maxlength="200" class="col-xs-10 col-sm-5">
+                        <input type="hidden" id="PgGuid" name="PgGuid" maxlength="200" value="@Model.PG_GUID" class="col-xs-10 col-sm-5">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label no-padding-right">Mã chương trình khuyến mại <span class="red">*</span></label>
+                                    <div class="col-sm-8">
+                                        @Model.PG_ID
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Trạng thái </label>
+                                    <div class="col-sm-9">
+                                        @{
+                                            if (Model.STATUS == "1")
+                                            {
+                                                <b style="color: green">Đang áp dụng</b>
+                                            }
+                                            else
+                                            {
+                                                <b style="color: red">Đã khóa</b>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2">Tiêu đề khuyến mãi <span class="red">*</span></label>
+                                    <div class="col-sm-10">
+                                        <textarea cols="3" id="PgName" name="PgName" maxlength="200" disabled="disabled" class="form-control">@Model.PG_NAME</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear clear-20"></div>
+                        <div class="page-header">
+                            <h1>Thời gian áp dụng khuyến mại</h1>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Thời gian bắt đầu <span class="red">*</span></label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group date">
+                                            <input class="form-control" id="StartDate" name="StartDate" type="text" disabled="disabled" value="@String.Format("{0:dd-MM-yyyy HH:mm:ss}", Model.START_DATE)" placeholder=" / / "/>
+                                            <span class="input-group-addon" style="font-size: 8px !important;">
+                                                <span class="fa fa-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Thời gian Kết thúc <span class="red">*</span></label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group date">
+                                            <input class="form-control" id="EndDate" name="EndDate" type="text" disabled="disabled" value="@String.Format("{0:dd-MM-yyyy HH:mm:ss}", Model.END_DATE)" placeholder=" / / "/>
+                                            <span class="input-group-addon" style="font-size: 8px !important;"> <span class="fa fa-calendar"></span> </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Ngày tạo</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group date">
+                                            @String.Format("{0:dd-MM-yyyy HH:mm:ss}", Model.CREATE_DATE)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Người tạo </label>
+                                    <div class="col-sm-9">
+                                        @Model.CREATE_BY
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Ngày sửa</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group date">
+                                            @String.Format("{0:dd-MM-yyyy HH:mm:ss}", Model.MODIFIED_DATE)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Người sửa</label>
+                                    <div class="col-sm-9">
+                                        @Model.MODIFIED_BY
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear clear-20"></div>
+                        <div class="page-header">
+                            <h1>Áp dụng chương trình khuyến mãi cho các điểm bán</h1>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="select-recive">
+                                    <div class="select-recive__header">
+                                        <table>
+                                            <tr>
+                                                <td width="20">
+                                                    <input type="checkbox" class="select-all" id="tmAll">
+                                                </td>
+                                                <td>
+                                                    <b>Danh mục ngành hàng</b>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <input type="text" class="form-control live-search-box" id="search-tm" placeholder="Tìm kiếm...">
+                                    </div>
+                                    <div class="select-recive__content live-search-list">
+                                        <span id='checkTmChecked'></span>
+                                        <div id="tm"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="select-recive">
+                                    <div class="select-recive__header">
+                                        <table>
+                                            <tr>
+                                                <td width="20">
+                                                    <input type="checkbox" class="select-all" id="spAll">
+                                                </td>
+                                                <td>
+                                                    <b>Danh sách điểm bán thuộc ngành hàng</b>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <input type="text" id="search-sp" class="form-control live-search-box" placeholder="Tìm kiếm...">
+                                    </div>
+                                    <div class="css-treeview select-recive__content" id="salepoint">
+                                        <span id='checkSpChecked'></span>
+                                        <div id="sp"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="clearfix form-actions text-center">
+                            <div class="col-md-12">
+                                <a href="@Url.Action("Index", "Program")" class="btn btn-default">Quay lại</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var treeModel = null;
+            var pgId = $("#PgId").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("LoadTabTmDelete")',
+                dataType: "json",
+                data: { pgId: pgId },
+                success: function (data) {
+                    treeModel = data.RspList;
+                    console.log(treeModel);
+                    $("#tm").jstree({
+                        "core": {
+                            "data": treeModel
+                        },
+                        "checkbox": {
+                            "keep_selected_style": false
+                        },
+                        "search": {
+                            "case_insensitive": true,
+                            "show_only_matches": true
+                        },
+                        "plugins": ["themes", "json_data", "ui", "checkbox", "search"]
+                    });
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $("#search-tm").keyup(function () {
+                var value = document.getElementById("search-tm").value;
+                console.log(value);
+                $('#tm').jstree('search', value);
+            });
+        });
+        $(document).ready(function () {
+            $("#search-sp").keyup(function () {
+                var value = document.getElementById("search-sp").value;
+                console.log(value);
+                $('#sp').jstree('search', value);
+            });
+        });
+        $(function () {
+            $('#tm').on('changed.jstree', function (e, data) {
+                $('#checkTmChecked').html('').css('color', 'red');
+                var arr = null;
+                var treeModelsp = null;
+                arr = $("#tm").jstree('get_checked');
+                $("#tm").find(".jstree-undetermined").each(
+                    function (i, element) {
+                        arr.push($(element).closest('.jstree-node').attr("id"));
+                    }
+                );
+                var pgGuid;
+                if (typeof arr !== 'undefined' && arr !== null && arr.length > 0) {
+                    pgGuid = $("#PgGuid").val();
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("LoadTabSpDelete")',
+                        dataType: "json",
+                        data: { tmId: arr, pgGuid: pgGuid },
+                        success: function (data) {
+                            treeModelsp = data.Data;
+                            $("#sp").jstree({
+                                "core": {
+                                    "data": treeModelsp
+                                },
+                                "checkbox": {
+                                    "keep_selected_style": false
+                                },
+                                "search": {
+                                    "case_insensitive": true,
+                                    "show_only_matches": true
+                                },
+                                "plugins": ["themes", "json_data", "ui", "checkbox", "search"]
+                            });
+                        }
+                    });
+                } else {
+                    $('#sp').jstree(true).settings.core.data = null;
+                    $('#sp').jstree(true).refresh();
+                    $('#checkTmChecked').html('').css('color', 'red');
+                }
+
+            });
+        });
+
+    </script>
+}

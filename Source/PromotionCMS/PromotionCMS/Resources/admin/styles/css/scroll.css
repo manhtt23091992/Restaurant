@@ -1,0 +1,76 @@
+﻿
+
+.table-fixed table {
+    border-collapse: collapse;
+    width: 100%;
+    overflow-x: scroll;
+    display: block;
+}
+
+.table-fixed thead {
+    background-color: #EFEFEF;
+}
+
+.table-fixed thead,
+.table-fixed tbody {
+    display: block;
+}
+
+.table-fixed tbody {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 350px;
+}
+
+.table-fixed td,
+.table-fixed thead>tr>th {
+    min-width: 100px;
+    height: 25px;
+    border: dashed 1px lightblue;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+
+.content {
+    height: 100%;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+.error {
+    font-size: 15px;
+    color: red
+}
+
+.table-fixed1 table {
+    border-collapse: collapse;
+    width: 100%;
+    overflow-x: scroll;
+    display: block;
+}
+
+.table-fixed1 thead {
+    background-color: #EFEFEF;
+}
+
+.table-fixed1 thead,
+.table-fixed1 tbody {
+    display: block;
+}
+
+.table-fixed1 tbody {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 350px;
+}
+
+.table-fixed1 td,
+.table-fixed1 thead>tr>th {
+    min-width: 100px;
+    height: 10px;
+    border: dashed 1px lightblue;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+}

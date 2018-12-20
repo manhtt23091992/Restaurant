@@ -1,0 +1,195 @@
+﻿@{
+    ViewBag.Title = "Gửi Email chương trình khuyến mại";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="@Url.Content("~/Resources/plugin/ckfinder/ckfinder.js")" type="text/javascript"></script>
+<div id="loading"></div>
+<div class="main-content">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý đăng ký nhận tin khuyến mãi</li>
+            <li>Gửi Email chương trình khuyến mại</li>
+        </ul>
+        <!-- /.breadcrumb -->
+        @*<div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Gửi Email chương trình khuyến mại</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-12" id="errorEmail">
+                </div>
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error ">@TempData["Message"]</span>
+                    </div>
+                }
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <form class="form-horizontal" id="form" role="form" action="@Url.Action("SendMail", "ReceiveNews")" method="POST">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Chủ đề<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" maxlength="200" name="subject" id="subject" style="-moz-min-width: 100%; -ms-min-width: 100%; -o-min-width: 100%; -webkit-min-width: 100%; min-width: 100%; min-height: 100px"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Nội dung<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" name="content" id="content" style="-moz-min-width: 100%; -ms-min-width: 100%; -o-min-width: 100%; -webkit-min-width: 100%; min-width: 100%; min-height: 100px"></textarea>
+                                <span id="contentErr"></span>
+                            </div>
+                        </div>
+                        <div class="clear clear-20"></div>
+                        <div class="page-header">
+                            <h1>Chọn người nhận email</h1>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="select-recive">
+                                    <div class="select-recive__header">
+                                        <table>
+                                            <tr>
+                                                <td width="20">
+                                                    <input type="checkbox" class="select-all" id="emailAll">
+                                                </td>
+                                                <td>
+                                                    <b>Danh sách người nhận Email</b>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <input type="text" class="form-control live-search-box" id="search-email" placeholder="Tìm kiếm...">
+                                    </div>
+                                    <div class="select-recive__content live-search-list">
+                                        <span id='checkedEmail'></span>
+                                        <div id="cemail"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="clearfix form-actions text-center">
+                            <div class="col-md-12">
+                                <a href="@Url.Action("Index", "ReceiveNews")" class="btn btn-default">Quay lại</a>
+                                <button type="submit" id="loadDiv1" class="btn btn-primary">Gửi Email</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var treeModel = null;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("LoadTabEmail")',
+                dataType: "json",
+                data: {},
+                success: function(data) {
+                    treeModel = data.RspList;
+                    $("#cemail").jstree({
+                        "core": {
+                            "data": treeModel
+                        },
+                        "checkbox": {
+                            "keep_selected_style": false
+                        },
+                        "search": {
+                            "case_insensitive": true,
+                            "show_only_matches": true
+                        },
+                        "plugins": ["themes", "json_data", "ui", "checkbox", "search"]
+                    });
+                }
+            });
+        });
+        $(document).ready(function() {
+            $("#emailAll").change(function() {
+                if ($('#emailAll').prop('checked') == true) {
+                    jQuery("#cemail").jstree("check_all");
+                } else {
+                    $('#cemail').jstree(true).deselect_all();
+                }
+
+            });
+        });
+        var p_editor = CKEDITOR.replace('content', {
+            fullPage: true,
+            allowedContent: true,
+            autoGrow_onStartup: true,
+            enterMode: CKEDITOR.ENTER_BR
+        });
+        $(document).ready(function() {
+            $("#search-email").keyup(function() {
+                var value = document.getElementById("search-email").value;
+                console.log(value);
+                $('#cemail').jstree('search', value);
+            });
+        });
+        $(document).ready(function() {
+         
+            $('#form').validate({
+                rules: {
+                    subject: {
+                        required: true,
+                        maxlength: 200
+                    }
+                },
+                messages: {
+                    subject: {
+                        required: "Chủ đề bắt buộc nhập",
+                        maxlength: "Chủ đề có độ dài từ 1 – 200 ký tự"
+                    }
+                },
+                submitHandler: function(form) {
+                    var content = CKEDITOR.instances['content'].getData();
+                    var cemail = $("#cemail").jstree('get_checked');
+                    if (typeof cemail !== 'undefined' && cemail !== null && cemail.length > 0) {
+                        $('#checkedEmail').html('').css('color', 'red');
+                            $('#loading').append('<div class="loader-wraper"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>');
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("SendMail", "ReceiveNews")',
+                                dataType: "json",
+                                data: {
+                                    cemail: cemail,
+                                    subject: $("#subject").val(),
+                                    content: content
+                                },
+                                success: function(data) {
+                                    if (!data.Success) {
+                                        $('#loading').empty();
+                                        if (data.Show === "1") {
+                                            $('#contentErr').html('Nội dung bắt buộc nhập').css('color', 'red');
+                                        } else {
+                                            $("#errorEmail").append('<span class="error">' + data.Message + '</span>');
+                                        }
+                                    } else {
+                                        alert('Gửi email thành công');
+                                        window.location.replace(data.ReturnUrl);
+                                    }
+                                }
+                            });
+                    } else {
+                        $('#checkedEmail').html('Bạn chưa chọn người nhận').css('color', 'red');
+                    }
+                }
+            });
+        });
+    </script>
+}

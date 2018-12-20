@@ -1,0 +1,175 @@
+﻿@using PromotionCMS.Areas.Admin.Models
+@{
+    ViewBag.Title = "Cập nhật điểm bán";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="@Url.Content("~/Resources/plugin/ckfinder/ckfinder.js")" type="text/javascript"></script>
+<div id="loading"></div>
+<div class="main-content" ng-controller="CategoryController">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý điểm bán</li>
+            <li>Cập nhật điểm bán theo lô</li>
+        </ul>
+        <!-- /.breadcrumb -->
+        @* <div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Cập nhật điểm bán theo lô</h1>
+            </div>
+            <div class="row">
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error ">@TempData["Message"]</span>
+                    </div>
+                }
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    @using (Html.BeginForm("UploadSp", "SalePoint", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", id = "form" }))
+                    {
+                        @*<form class="form-horizontal" id="form" role="form" action="@Url.Action("UploadSp")" method="POST">*@
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top">Tên điểm bán<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <input type="file" id="file" name="file">
+                                <span id='checkfile' class="error"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Ghi chú</label>
+                            <div class="col-sm-9">
+                                <ul>
+                                    <li>
+                                        File có định dạng: .xls .xlsx .csv
+                                    </li>
+                                    <li>
+                                        Các cột gắn dấu <span style="color: red">(*)</span> là các cột nhập liệu bắt buộc
+                                    </li>
+                                    <li>
+                                        File mẫu : <a href="@Url.Content("~/Resources/admin/file/DSDiemketnoi.xlsx")"><u>Điểm bán.xls</u></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Upload Ảnh </label>
+                            <div class="col-sm-9">
+                                <button class="btn btn-primary" id="btnSelectImg" name="btnSelectImg"><i class="fa fa-folder"></i><span class="hidden-xs">&nbsp;Chọn ảnh</span></button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">LƯU Ý</label>
+                            <div class="col-sm-9">
+                                <ul>
+                                    <li>
+                                        Chọn thư mục <b style="color: red">cmsimages=>Merchant</b> để upload ảnh
+                                    </li>
+                                    <li>
+                                        Ảnh upload được đặt tên giống với tên ảnh khai báo trong file upload
+                                    </li>
+                                    <li>
+                                        Dung lượng ảnh:<b><800kb</b>
+                                    </li>
+                                    <li>
+                                        Kích thước ảnh: <b>100 x 100</b>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <a href="@Url.Action("Index", "SalePoint")" class="btn btn-default">Quay lại</a>
+                                <input type="submit" id="loadDiv" name="loadDiv" class="btn btn-primary" value="Upload Điểm Bán" />
+                                <a href="@Url.Action("LatLng", "SalePoint")" class="btn btn-primary">ĐIỂM BÁN CHƯA CÓ KINH VĨ ĐỘ</a>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="form-group" style="padding-left: 30px">
+                            <b>Kết quả import:</b>
+                            <ul>
+                                <li>
+                                    Số lượng bản ghi import thành công
+                                    <b style="color: green;font-size:30px">
+                                        @TempData["countCheckInsertS"]
+                                    </b>
+                                    bản ghi
+                                </li>
+                                <li>
+                                    Số lượng bản ghi import lỗi do bị null 1 số trường dữ liệu xem chi tiết <a href="@Url.Content("~/Resources/admin/file/validate.docx")"><u>Tại đây</u></a>
+                                    <b style="color: red">
+                                        @TempData["countCheckInsertF"]
+                                    </b>
+                                    bản ghi, Vị trí những bản ghi lỗi
+                                    <b style="color: red">
+                                        {
+                                        @TempData["indexCheckInsertF"]
+                                        }
+                                    </b> Vị trí này tương ứng với số dòng trong file excel
+                                </li>
+                            </ul>
+                        </div>
+                        @*</form>*@
+                    }
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+<!-- /.main-content -->
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnSelectImg").click(function () {
+                var finder = new CKFinder();
+                finder.selectActionFunction = function (fileUrl) {
+                };
+                finder.popup();
+                return false;
+            });
+        });
+        $("#file").change(function () {
+            var fileExtension = ['xls', 'xlsx', 'csv'];
+            if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                alert("Chỉ được phép import file xls hoặc xlsx");
+            }
+        });
+        $(document).ready(function () {
+            $('input[name="loadDiv"]').on('click', function (e) {
+                if ($('#file').val() != '') {
+                    $('#loading').append('<div class="loader-wraper"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>');
+                    $("#form").submit();
+                } else {
+                    $('#checkfile').append("Bạn chưa chọn file Upload");
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            $('#loadDiv1').on('click', function (e) {
+                $('#loading').append('<div class="loader-wraper"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>');
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetLngLat")',
+                    dataType: "json",
+                    data: {},
+                    success: function (states) {
+                        alert(states.Message);
+                        window.location.replace(states.ReturnUrl);
+                    },
+                    error: function (ex) {
+                        window.location.replace('@Url.Action("Index")');
+                    }
+                });
+            });
+        });
+
+    </script>
+}

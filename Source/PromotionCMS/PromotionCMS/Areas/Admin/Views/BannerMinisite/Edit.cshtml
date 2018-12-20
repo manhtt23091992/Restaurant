@@ -1,0 +1,194 @@
+﻿@using PromotionCMS.Areas.Admin.Models
+@using PromotionCMS.Models
+@model BANNER_MINISITE
+@{
+    ViewBag.Title = "Cập nhật Banner MiniSite";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="@Url.Content("~/Resources/plugin/ckfinder/ckfinder.js")" type="text/javascript"></script>
+<div class="main-content" ng-controller="CategoryController">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý Banner MiniSite</li>
+            <li>Cập nhật Banner MiniSite(Sửa)</li>
+        </ul>
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Cập nhật Banner MiniSite</h1>
+            </div>
+            <div class="row">
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error">Kết nối bị gián đoạn. Vui lòng thử lại</span>
+                    </div>
+
+                }
+                <div class="col-xs-12">
+                    @if (Model != null && Model.BANNER_ID > 0)
+                    {
+                        <!-- PAGE CONTENT BEGINS -->
+                        <form class="form-horizontal" id="form" role="form" action="@Url.Action("Edit")" method="POST">
+                            <input type="hidden" id="Bannerid" name="Bannerid" value="@Model.BANNER_ID" />
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right p_top">Tên Banner <font style="color: red">(*)</font> </label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="BannerTitle" name="BannerTitle" value="@Model.BANNER_TITLE" maxlength="300" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Link bài viết chi tiết <font style="color: red">(*)</font> </label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="Link" name="Link" value="@Model.LINK" maxlength="300" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="form-field-1">Upload Ảnh <font style="color: red">(*)</font> </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="ImageUrl" id="ImageUrl" value="@Model.IMAGE_URL" class="col-sm-9"> <button class="btn btn-primary" id="btnSelectImg" name="btnSelectImg"><i class="fa fa-folder"></i><span class="hidden-xs">&nbsp;Chọn ảnh</span></button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="clearfix">
+                                    <label class="col-sm-3 control-label no-padding-right" for="">Thời gian bắt đầu <font style="color: red">(*)</font></label>
+                                    <div class="col-sm-3">
+                                        <div class='input-group date'>
+                                            <input class="form-control" id="StartDate" name="StartDate" type="text" value="@String.Format("{0:dd-MM-yyyy HH:mm:ss}",@Model.START_DATE)" placeholder="@Model.START_DATE" />
+                                            <span class="input-group-addon" style="font-size: 8px !important;">
+                                                <span class="fa fa-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <label class="col-sm-3 col-sm-pull-1 control-label no-padding-right" for="">Kết thúc <font style="color: red">(*)</font></label>
+                                    <div class="col-sm-3 col-sm-pull-1">
+                                        <div class="input-group date">
+                                            <input class="form-control" id="ToDate" name="ToDate" type="text" value="@String.Format("{0:dd-MM-yyyy HH:mm:ss}",@Model.END_DATE)" placeholder="@Model.END_DATE" />
+                                            <span class="input-group-addon" style="font-size: 8px !important;"> <span class="fa fa-calendar"></span> </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                            <div class="clearfix form-actions">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <a href="@Url.Action("Index", "BannerMinisite")" cla class="btn btn-default">Quay lại</a>
+                                    <button type="submit" id="popup" class="btn btn-primary">Lưu lại</button>
+                                </div>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+<!-- /.main-content -->
+@section scripts{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#btnSelectImg").click(function () {
+                var finder = new CKFinder();
+
+                finder.selectActionFunction = function (fileUrl) {
+                    $('#ImageUrl').val(fileUrl);
+                };
+                finder.popup();
+                return false;
+            });
+        });
+        $("#StartDate").datetimepicker({
+            timepicker: true,
+            closeOnDateSelect: false,
+            closeOnTimeSelect: true,
+            initTime: true,
+            format: 'd-m-Y H:m:s'
+        });
+        $("#ToDate").datetimepicker({
+            timepicker: true,
+            closeOnDateSelect: false,
+            closeOnTimeSelect: true,
+            initTime: true,
+            format: 'd-m-Y H:m:s'
+        });
+        $("#popup").click(function () {
+            $('#form').validate({
+                rules: {
+                    BannerTitle: {
+                        required: true,
+                        minlength: 1,
+                        maxlength: 300
+                    },
+                    Link: {
+                        required: true,
+                        minlength: 4,
+                        maxlength: 300
+                    },
+                    StartDate: {
+                        required: true,
+                    },
+                    ToDate: {
+                        required: true,
+                    },
+                    ImageUrl: {
+                        required: true,
+                        minlength: 4,
+                        maxlength: 300
+                    },
+                },
+                messages: {
+                    BannerTitle: {
+                        required: "Tên Banner bắt buộc nhập, có độ dài từ 1 – 300 ký tự",
+                        minlength: "Tên Banner bắt buộc nhập, có độ dài từ 1 – 300 ký tự",
+                        maxlength: "Tên Banner bắt buộc nhập, có độ dài từ 1 – 300 ký tự"
+                    },
+                    Link: {
+                        required: "Link bài viết chi tiết bắt buộc nhập",
+                        minlength: "Link không hợp lệ",
+                        maxlength: "Link vượt quá độ dài từ 300 ký tự"
+                    },
+                    StartDate: {
+                        required: "Thời gian bắt đầy bắt buộc nhập",
+                    },
+                    ToDate: {
+                        required: "Thời gian kết thúc bắt buộc nhập",
+                    },
+                    ImageUrl: {
+                        required: "Link ảnh bắt buộc nhập",
+                        minlength: "Link không hợp lệ",
+                        maxlength: "Link vượt quá độ dài từ 300 ký tự"
+                    },
+                },
+                submitHandler: function (form) {
+                    var postData = $("#form").serialize();
+                    var submitUrl = $("#form").attr("action");
+                    $.ajax({
+                        type: "POST",
+                        url: submitUrl,
+                        data: postData,
+                        dataType: 'JSON',
+                        success: function (x) {
+                            if (x.code == '00') {
+                                alert("Cập nhật Banner thành công!");
+                                window.location.href ='@Url.Action("Index", "BannerMinisite")';
+                            }
+                            if (x.code == '02') {
+                                alert("Cập nhật Banner thất bại. Banner đã tồn tại!");
+                            }
+                            if (x.code == '04') {
+                                alert("Thời gian kết thúc phải lớn hơn thời gian bắt đầu!");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            });
+        });
+    </script>
+}

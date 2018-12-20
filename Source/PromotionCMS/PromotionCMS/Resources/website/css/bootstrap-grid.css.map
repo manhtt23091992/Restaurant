@@ -1,0 +1,15 @@
+{
+    "version": 3,
+    "mappings": "AAAA;;;;;GAKG;AAED,aAAa;EAAG,KAAK,EAAE,YAAY",
+    "sources": [
+        "../../scss/bootstrap4/bootstrap-grid.scss",
+        "../../scss/bootstrap4/_functions.scss",
+        "../../scss/bootstrap4/_grid-varibles.scss",
+        "../../scss/bootstrap4/_breakpoints.scss",
+        "../../scss/bootstrap4/_grid-framework.scss",
+        "../../scss/bootstrap4/_grid.scss",
+        "../../scss/bootstrap4/_grid.scss"
+    ],
+    "names": [],
+    "file": "bootstrap-grid.css"
+}

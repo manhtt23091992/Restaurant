@@ -1,0 +1,151 @@
+﻿@using PromotionCMS.Areas.Admin.Models
+@{
+    ViewBag.Title = "Cập nhật tham số hệ thống";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="@Url.Content("~/Resources/plugin/ckfinder/ckfinder.js")" type="text/javascript"></script>
+<div class="main-content" ng-controller="SettingsController">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý tham số hệ thống</li>
+            <li>Cập nhật tham số(Thêm mới)</li>
+        </ul>
+        <!-- /.breadcrumb -->
+        @* <div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Cập nhật danh mục</h1>
+            </div>
+            <div class="row">
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error">Kết nối bị gián đoạn. Vui lòng thử lại </span>
+                    </div>
+                }
+                <div class="col-xs-12">
+                    <form class="form-horizontal" id="form" role="form" action="@Url.Action("SettingsCreate")" method="POST">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top">Code<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <input type="text" id="SetCode" name="SetCode" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top">Keyword<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <input type="text" id="SetKey" name="SetKey" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Value<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" name="SetValue" id="SetValue" style="-moz-min-width: 100%; -ms-min-width: 100%; -o-min-width: 100%; -webkit-min-width: 100%; min-width: 100%; min-height: 100px"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top">Ghi chú<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" name="SetNote" id="SetNote" style="-moz-min-width: 100%; -ms-min-width: 100%; -o-min-width: 100%; -webkit-min-width: 100%; min-width: 100%; min-height: 100px"></textarea>
+                            </div>
+                        </div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+
+                                <a href="@Url.Action("Index","Settings")" class="btn btn-default">Quay lại</a>
+                                <button type="submit" id="stpopup" class="btn btn-primary">Lưu lại</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        CKEDITOR.replace('SetValue');
+        $("#stpopup").click(function () {
+            $('#form').validate({
+                ignore: [],
+                debug: false,
+                rules: {
+                    SetCode: {
+                        required: true,
+                        minlength: 1,
+                        maxlength: 200
+                    },
+                    SetKey: {
+                        required: true,
+                        minlength: 1,
+                        maxlength: 200
+                    },
+                    SetValue: {
+                        required: function () {
+                            CKEDITOR.instances.SetValue.updateElement();
+                        },
+                        minlength: 1,
+                        maxlength: 200
+                    },
+                    SetNote: {
+                        required: true,
+                        minlength: 1,
+                        maxlength: 300
+                    },
+                },
+                messages: {
+                    SetCode: {
+                        required: "Code bắt buộc nhập, có độ dài từ 1 – 200 ký tự",
+                        minlength: "Code bắt buộc nhập, có độ dài từ 1 – 200 ký tự",
+                        maxlength: "Code bắt buộc nhập, có độ dài từ 1 – 200 ký tự"
+                    },
+                    SetKey: {
+                        required: "Keyword bắt buộc nhập, có độ dài từ 1 – 200 ký tự",
+                        minlength: "Keyword bắt buộc nhập, có độ dài từ 1 – 200 ký tự",
+                        maxlength: "Keyword bắt buộc nhập, có độ dài từ 1 – 200 ký tự"
+                    },
+                    SetValue: {
+                        required: "Value bắt buộc nhập, có độ dài từ 1 – 200 ký tự",
+                        minlength: "Value bắt buộc nhập, có độ dài từ 1 – 200 ký tự",
+                        maxlength: "Value bắt buộc nhập, có độ dài từ 1 – 200 ký tự"
+                    },
+                    SetNote: {
+                        required: "Thông tin Ghi chú bắt buộc nhập, có độ dài từ 1 – 300 ký tự",
+                        minlength: "Thông tin Ghi chú buộc nhập, có độ dài từ 1 – 300 ký tự",
+                        maxlength: "Thông tin Ghi chú bắt buộc nhập, có độ dài từ 1 – 300 ký tự"
+                    },
+
+                },
+                submitHandler: function (form) {
+                    var postData = $("#form").serialize();
+                    var submitUrl = $("#form").attr("action");
+                    $.ajax({
+                        type: "POST",
+                        url: submitUrl,
+                        data: postData,
+                        dataType: 'JSON',
+                        success: function (x) {
+                            if (x.code == '00') {
+                                alert("Thêm tham số thành công!");
+                                window.location.href ='@Url.Action("Index", "Settings")';
+                            }
+                            if (x.code == '02') {
+                                alert("Thêm tham số thất bại. Tham số đã tồn tại!");
+                            }
+                            if (x.code == '01') {
+                                alert("Thêm tham số thất bại. Vui lòng cập nhật lại!");
+                            }
+                            if (x.code == '03') {
+                                alert("Thêm tham số thất bại. Vui lòng cập nhật lại!");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,91 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout_login.cshtml";
+}
+<div class="position-relative">
+    <div id="login-box" class="login-box visible widget-box no-border">
+        <div class="widget-body">
+            <div class="widget-main">
+                <h4 class="header blue lighter bigger"><i class="default-icon fa fa-lock blue"></i>Đăng nhập hệ thống</h4>
+                <div class="space-6"></div>
+                <div class="row">
+                    <div class="col-md-12">
+                        @if (TempData["RspCode"] != null)
+                        {
+                            if ((string)TempData["RspCode"] != "00")
+                            {
+                                <span class="error">@TempData["Message"]</span>
+                            }
+                        }
+                    </div>
+                </div>
+                <form id="loginForm" method="POST" action="@Url.Action("Login","Users")">
+                    <fieldset>
+                        <label class="block clearfix">
+                            <span class="block input-icon input-icon-right">
+                                <input type="text" class="form-control" name="UserName" id="UserName" maxlength="200" placeholder="Tên đăng nhập" />
+                                <i class="default-icon fa fa-user"></i>
+                            </span>
+                        </label>
+                        <label class="block clearfix">
+                            <span class="block input-icon input-icon-right">
+                                <input type="password" class="form-control" name="Password" id="Password" maxlength="50" placeholder="Mật khẩu" />
+                                <i class="default-icon fa fa-lock"></i>
+                            </span>
+                        </label>
+                        <div class="space"></div>
+                        <div class="clearfix">
+                            <button class="width-35 pull-right btn btn-sm btn-primary" type="submit"><i class="default-icon fa fa-key"></i><span class="bigger-110">Đăng nhập</span></button>
+                        </div>
+                        <div class="space-4"></div>
+                    </fieldset>
+                </form>
+            </div>
+            <!-- /.widget-main -->
+        </div>
+        <!-- /.widget-body -->
+    </div>
+    <!-- /.login-box --><!-- /.signup-box -->
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#loginForm').validate({
+                rules: {
+                    UserName: {
+                        required: true,
+                        maxlength: 200
+                    },
+                    Password: {
+                        required: true,
+                        minlength: 1,
+                        maxlength: 50
+                    }
+                },
+                messages: {
+                    UserName: {
+                        required: 'Tên đăng nhập bắt buộc nhập',
+                        maxlength: 'Tên đăng nhập có độ dài từ 1 – 200 ký tự'
+                    },
+                    Password: {
+                        required: 'Mật khẩu bắt buộc nhập',
+                        minlength: 'Mật khẩu có độ dài từ 1 – 50 ký tự',
+                        maclength: 'Mật khẩu có độ dài từ 1 – 50 ký tự'
+                    }
+
+                }
+            });
+
+            $(document).on('keydown', '#username', function (e) {
+                if (e.keyCode === 32)
+                    return false;
+                return false;
+            });
+            $(document).on('keydown', '#password', function (e) {
+                if (e.keyCode === 32)
+                    return false;
+                return false;
+            });
+        });
+    </script>
+}

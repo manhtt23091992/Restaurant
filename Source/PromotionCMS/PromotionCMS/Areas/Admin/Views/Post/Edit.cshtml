@@ -1,0 +1,216 @@
+﻿@using System.Security.Policy
+@using PromotionCMS.Areas.Admin.Models
+@using PromotionCMS.Models
+@model POST
+@{
+    ViewBag.Title = "Cập nhật tin tức khuyến mại";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="@Url.Content("~/Resources/plugin/ckfinder/ckfinder.js")" type="text/javascript"></script>
+<div class="main-content" ng-controller="CategoryController">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý tin tức khuyến mại</li>
+            <li>Cập nhật tin tức khuyến mại(Sửa)</li>
+        </ul>
+        <!-- /.breadcrumb -->
+        @* <div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Cập nhật tin tức khuyến mại</h1>
+            </div>
+            <div class="row">
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error">@TempData["Message"]</span>
+                    </div>
+
+                }
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <form class="form-horizontal" id="form" role="form" action="@Url.Action("Edit")" method="POST">
+                        <input type="hidden" id="PostId" name="PostId" value="@Model.POST_ID" maxlength="200" class="form-control">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Tiêu đề khuyến mại<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" maxlength="200" name="PostTitle" id="PostTitle" style="-moz-min-width: 100%; -ms-min-width: 100%; -o-min-width: 100%; -webkit-min-width: 100%; min-width: 100%; min-height: 100px">@Model.POST_TITLE</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Nội dung rút gọn</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" name="PostDescription" maxlength="200" id="PostDescription" style="-moz-min-width: 100%; -ms-min-width: 100%; -o-min-width: 100%; -webkit-min-width: 100%; min-width: 100%; min-height: 100px">@Model.POST_DESCRIPTION</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Nội dung chi tiết</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" name="PostContent" maxlength="4000" id="PostContent" style="-moz-min-width: 100%; -ms-min-width: 100%; -o-min-width: 100%; -webkit-min-width: 100%; min-width: 100%; min-height: 100px">@Model.POST_CONTENT</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="clearfix">
+                                <label class="col-sm-3 control-label no-padding-right" for="">Thời gian đăng bài</label>
+                                <div class="col-sm-3">
+                                    <div class='input-group date'>
+                                        <input class="form-control" id="CreatedPost" name="CreatedPost" type="text" value="@String.Format("{0:dd-MM-yyyy HH:mm:ss}", Model.CREATE_POST)" placeholder=" / / " autocomplete="off"/>
+                                        <span class="input-group-addon" style="font-size: 8px !important;">
+                                            <span class="fa fa-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <label class="col-sm-3 col-sm-pull-1 control-label no-padding-right" for="">Thời gian dự kiến khóa </label>
+                                <div class="col-sm-3 col-sm-pull-1">
+                                    <div class="input-group date">
+                                        <input class="form-control" id="CreatedLook" name="CreatedLook" value="@String.Format("{0:dd-MM-yyyy HH:mm:ss}", Model.CREATE_LOOK)" type="text" placeholder=" / / " autocomplete="off"/>
+                                        <span class="input-group-addon" style="font-size: 8px !important;"> <span class="fa fa-calendar"></span> </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="clearfix">
+                                <label class="col-sm-3 control-label no-padding-right" for="">Ngày Tạo</label>
+                                <div class="col-sm-3">
+                                    <div class='input-group date'>
+                                        <input class="form-control" id="CreatedDate" name="CreatedDate" type="text" value="@String.Format("{0:dd-MM-yyyy HH:mm:ss}", Model.CREATED_DATE)" placeholder=" / / " />
+                                        <span class="input-group-addon" style="font-size: 8px !important;">
+                                            <span class="fa fa-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <label class="col-sm-3 col-sm-pull-1 control-label no-padding-right" for="">Người tạo </label>
+                                <div class="col-sm-3 col-sm-pull-1" style="padding-top: 8px">
+                                    <span>@Model.CREATED_BY</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Upload Ảnh </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="PostThumbnail" id="PostThumbnail" value="@Model.POST_THUMBNAIL" class="col-sm-9" style="height: 35px"> <button class="btn btn-primary btn-file" id="btnSelectImg" name="btnSelectImg"><i class="fa fa-folder"></i><span class="hidden-xs">&nbsp;Chọn ảnh</span></button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1"> </label>
+                            <div class="col-sm-9">
+                                <img style="max-width: 200px; max-height: 200px;border: 1px solid" id="imageMerchant" />
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <a href="@Url.Action("Index", "Post")" class="btn btn-default">Quay lại</a>
+                                <button type="submit" class="btn btn-primary">Lưu lại</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+<!-- /.main-content -->
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnSelectImg").click(function () {
+                var finder = new CKFinder();
+                finder.selectActionFunction = function (fileUrl) {
+                    $('#PostThumbnail').val(fileUrl);
+                    $('#imageMerchant').attr('src', fileUrl);
+                };
+                finder.popup();
+                return false;
+            });
+            var link = $('#PostThumbnail').val();
+            $('#imageMerchant').attr('src', link);
+            $("#CreatedDate").datetimepicker({
+                timepicker: true,
+                closeOnDateSelect: false,
+                closeOnTimeSelect: true,
+                initTime: true,
+                format: 'd-m-Y H:i:s',
+                roundTime: 'ceil'
+            });
+            $("#CreatedPost").datetimepicker({
+                timepicker: true,
+                closeOnDateSelect: false,
+                closeOnTimeSelect: true,
+                initTime: true,
+                format: 'd-m-Y H:i:s',
+                roundTime: 'ceil',
+                onShow: function (dp, $input) {
+                    $("#CreatedLook").datetimepicker({
+                        minDate: dp
+                    });
+                }
+            });
+            $("#CreatedLook").datetimepicker({
+                timepicker: true,
+                closeOnDateSelect: false,
+                closeOnTimeSelect: true,
+                initTime: true,
+                format: 'd-m-Y H:m:s',
+                roundTime: 'ceil',
+                onShow: function (currentTime, $input) {
+                    $("#CreatedPost").datetimepicker({
+                        maxDate: currentTime
+                    });
+                }
+            });
+        });
+        CKEDITOR.replace('PostContent', {
+            wordcount: {
+                showParagraphs: false,
+                showWordCount: true,
+                showCharCount: true,
+                countSpacesAsChars: false,
+                countHTML: false,
+                maxWordCount: -1,
+                maxCharCount: 4000
+            }
+        });
+        $(document).ready(function () {
+            $('#form').validate({
+                rules: {
+                    PostTitle: {
+                        required: true,
+                        maxlength: 200
+                    },
+                    PostDescription: {
+                        maxlength: 200
+                    },
+                    PostContent: {
+                        maxlength: 4000
+                    },
+                    CreatedDate: {
+                        required: true
+                    }
+                },
+                messages: {
+                    PostTitle: {
+                        required: "Tiêu đề khuyến mại bắt buộc nhập, có độ dài từ 1 – 200 ký tự",
+                        maxlength: "Tiêu đề khuyến mại bắt buộc nhập, có độ dài từ 1 – 200 ký tự"
+                    },
+                    PostDescription: {
+                        maxlength: "Nội dung rút gọn có độ dài từ không vượt quá 200 ký tự"
+                    },
+                    PostContent: {
+                        maxlength: "Nội dung chi tiết có độ dài từ không vượt quá 4000 ký tự"
+                    },
+                    CreatedDate: {
+                        required: "Ngày tạo bắt buộc nhập"
+                    }
+                }
+            });
+        });
+    </script>
+}

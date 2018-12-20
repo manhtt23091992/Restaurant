@@ -1,0 +1,41 @@
+﻿<header class="menu">
+    <div class="menu__wrap">
+        <a class="menu__logo" href="@Url.Action("Index","Home")">
+            <img class="non-click" src="~/Resources/website/images/logo.svg" alt="">
+        </a>
+        <div class="menu__content__outside">
+            <div class="menu__content">
+                <div class="menu__content__wrap navbar-nav">
+                    <a class="menu__item active" href="https://vnpayment.vnpay.vn/">
+                        <div class="menu__item__block">GIỚI THIỆU</div>
+                    </a>
+                    <a class="menu__item" href="https://vnpayqr.vn/diem-ket-noi-vnpay-qr">
+                        <div class="menu__item__block">ĐIỂM KẾT NỐI VNPAY-QR</div>
+                    </a>
+                    <a class="menu__item" href="~/tin-tuc">
+                        <div class="menu__item__block">KHUYẾN MÃI</div>
+                    </a>
+                    <a class="menu__item" href="@Url.Action("Index","Home")#help">
+                        <div class="menu__item__block">HƯỚNG DẪN</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="menu__mobile">
+            <div class="menu__mobile__item menu__mobile__logo">
+                <a class="" href="@Url.Action("Index","Home")">
+                    <img class="non-click" src="~/Resources/website/images/logo.svg" alt="">
+                </a>
+            </div>
+            <div class="menu__mobile__item menu__mobile__ic text-right">
+                <label for="menu-trigger">
+                    <div class="hamburger hamburger--emphatic">
+                        <div class="hamburger-box">
+                            <div class="hamburger-inner"></div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+    </div>
+</header>

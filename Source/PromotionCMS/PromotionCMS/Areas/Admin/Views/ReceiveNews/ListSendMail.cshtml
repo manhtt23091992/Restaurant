@@ -1,0 +1,124 @@
+﻿@{
+    ViewBag.Title = "Lịch sử các Email đã gửi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div ng-controller="ReceiveNewsController">
+    <div class="main-content">
+        <span ng-init="GetListLogEmail()"></span>
+        <div class="breadcrumbs" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+                <li>Quản lý đăng ký nhận tin khuyến mãi</li>
+                <li>Lịch sử các Email đã gửi</li>
+            </ul>
+        </div>
+        <div class="page-content">
+            <div class="page-content-area">
+                <div class="page-header">
+                    <h1>Lịch sử các Email đã gửi</h1>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <form class="form-horizontal row clearfix" role="form">
+                            <div class="col-sm-4">
+                                <div class="form-group clearfix">
+                                    <label class="col-sm-5 control-label no-padding-right p_top" for="form-field-1">Email người nhận: </label>
+                                    <div class="col-sm-7">
+                                        <input type="text" ng-model="toEmail" id="toEmail" maxlength="200" name="toEmail" class="form-control" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group clearfix">
+                                    <label class="col-sm-5 control-label no-padding-right p_top" for="form-field-1">Trạng thái: </label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control" ng-model="emailStatus">
+                                            <option value="">Tất cả</option>
+                                            <option value="1">Gửi thành công</option>
+                                            <option value="0">Gửi Lỗi</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group clearfix">
+                                    <input class="btn btn-primary" href="javascript:void(0)" ng-click="GetListLogEmail()" type="submit" value="Tìm kiếm">
+                                    <a href="@Url.Action("Index", "ReceiveNews")" class="btn btn-default">Quay lại</a>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="dataTables_wrapper form-inline no-footer">
+                            <table id="table_list" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th width="50" class="center">STT</th>
+                                        <th>Người nhận Mail</th>
+                                        <th>Subject</th>
+                                        <th>Ngày gửi</th>
+                                        <th>Trạng thái</th>
+                                        <th>Quản lý</th>
+                                    </tr>
+                                </thead>
+                                <tbody ng-if="ListData1.length>0" ng-cloak>
+                                    <tr ng-repeat="item in ListData1">
+                                        <td class="center">{{item.index}}</td>
+                                        <td>{{item.TO_EMAIL}}</td>
+                                        <td>{{item.SUBJECT_EMAIL}}</td>
+                                        <td>{{item.CREATE_DATE | formatjsondate: 'dd/MM/yyyy hh:mm a'}}</td>
+                                        <td>
+                                            <span ng-if="item.STATUS === '0'" class="label label-sm label-danger">Gửi Lỗi</span>
+                                            <span ng-if="item.STATUS === '1'" class="label label-sm label-success">Gửi thành công</span>
+                                        </td>
+                                        <td>
+                                            <a title="Xem chi tiết" class="green" href="javascript:void(0)" ng-click="ViewLogEmail(item.EMAIL_LOG_ID)"> <i class="default-icon fa fa-exclamation-circle bigger-130"></i> </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <form class="" role="form">
+                                        <div class="dataTables_length" id="table_list_length">
+                                            <label>
+                                                Hiển thị
+                                                <select ng-change="GetListLogEmail()" name="table_list_length" id="table_list_length" ng-model="table_list_length" ng-init="table_list_length='10'" aria-controls="table_list" class="form-control input-sm">
+                                                    <option selected="selected" value="10">10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select>
+                                                Bản ghi
+                                            </label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="pager">
+                                        <div class="dataTables_paginate">
+                                            <pagination num-pages="numPages" total-items="totalRow" ng-model="currentPage" ng-change="pageChanged1()" max-size="maxSize" class="pagination-sm" items-per-page="itemsPerPage" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id='myModal' class='modal'>
+        <div class=" modal-dialog" style="width: 1000px !important">
+            <div class=" modal-content">
+                <div id='myModalContent'></div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $("#closbtn").click(function () {
+            $('#myModal').modal('hide');
+        });
+    </script>
+}

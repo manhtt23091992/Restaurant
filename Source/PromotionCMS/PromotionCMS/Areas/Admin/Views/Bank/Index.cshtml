@@ -1,0 +1,177 @@
+﻿@{
+    ViewBag.Title = "Quản lý Ngân Hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="BankController">
+    <div class="main-content">
+        <span ng-init="GetListBank()"></span>
+        <div class="breadcrumbs" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+                <li>Quản lý Ngân Hàng</li>
+            </ul>
+            <!-- /.breadcrumb -->
+            @* <div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+        </div>
+        <div class="page-content">
+            <div class="page-content-area">
+                <div class="page-header">
+                    <h1>Quản lý Ngân Hàng</h1>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <form class="form-horizontal row clearfix" role="form">
+                            <div class="col-sm-4">
+                                <div class="form-group clearfix">
+                                    <label class="col-sm-5 control-label no-padding-right p_top" for="form-field-1">Tên ngân hàng </label>
+                                    <div class="col-sm-7">
+                                        <input type="text" ng-model="BankName" id="BankName" name="BankName" class="form-control" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group clearfix">
+                                    <label class="col-sm-5 control-label no-padding-right p_top" for="form-field-1">Trạng thái </label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control" ng-model="BankStatus">
+                                            <option value="">Tất cả</option>
+                                            <option value="1">Hoạt động</option>
+                                            <option value="0">Tạm khóa</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                            <div class="clearfix form-actions center">
+                                <input class="btn btn-default" href="javascript:void(0)" ng-click="GetListBank()" type="submit" value="Tìm kiếm">
+                                <a href="@Url.Action("Create", "Bank")" class="btn btn-primary">Thêm mới</a>
+                                <a href="@Url.Action("Priority", "Bank")" class="btn btn-primary">Phân quyền ưu tiên</a>
+                            </div>
+                        </form>
+                        <div class="clear"></div>
+                        @if (ReferenceEquals(TempData["RspCode"], "00"))
+                        {
+                            <div class="col-md-12" style="margin: 0 0 10px 0;" id="notice">
+                                <span class="success">@TempData["Message"]</span>
+                            </div>
+                        }
+                        <div class="col-md-12" style="margin: 0 0 10px 0;" id="noticestatus">
+                        </div>
+                        <div class="clear"></div>
+                        <div class="dataTables_wrapper form-inline no-footer">
+                            <table id="table_list" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th width="40" class="center">STT</th>
+                                        <th>Tên ngân hàng</th>
+                                        <th width="200">Đường dẫn website</th>
+                                        <th width="150">Đường dẫn app Android</th>
+                                        <th width="150">Đường dẫn app IOS</th>
+                                        <th>Trạng thái</th>
+                                        <th>Ảnh</th>
+                                        <th>Mức độ ưu tiên</th>
+                                        <th>Sắp sếp</th>
+                                        <th width="60" class="center">Quản lý</th>
+                                    </tr>
+                                </thead>
+                                <tbody ng-if="ListData.length>0" ng-cloak>
+                                    <tr ng-repeat="item in ListData">
+                                        <td class="center">{{item.index}}</td>
+                                        <td>{{item.BANNER_TITLE}}</td>
+                                        <td>{{item.LINK}}</td>
+                                        <td>{{item.LINK_ANDROID}}</td>
+                                        <td>{{item.LINK_IOS}}</td>
+                                        <td>
+                                            <span ng-if="item.BANNER_STATUS === '0'" class="label label-sm label-danger">Tạm Khóa</span>
+                                            <span ng-if="item.BANNER_STATUS === '1'" class="label label-sm label-success">Hoạt động</span>
+                                        </td>
+                                        <td><div ng-if="item.IMAGE_URL !==''"><img style="max-width: 100px" src="{{item.IMAGE_URL}}" /></div></td>
+                                        <td ng-if="item.PRIORITIZE === '1'">Ưu tiên</td>
+                                        <td ng-if="item.PRIORITIZE === '0'">không ưu tiên</td>
+                                        <td>{{item.ORD}}</td>
+                                        <td class="center">
+                                            <a title="Sửa" class="green" href="@Url.Action("Edit")?id={{item.BANNER_ID}}"> <i class="default-icon fa fa-pencil bigger-130"></i> </a>
+                                            <a ng-if="item.BANNER_STATUS === '1'" href="#block-popup" ng-click="SetCate(item.BANNER_ID, item.BANNER_STATUS)" data-toggle="modal" data-tooltip="Khóa" class="default-icon " data-placement="top" data-original-title="Khóa"><i class="fa fa-lock" style="color:red"></i></a>
+                                            <a ng-if="item.BANNER_STATUS === '0'" href="#unblock-popup" ng-click="SetCate(item.BANNER_ID, item.BANNER_STATUS)" data-toggle="modal" data-tooltip="Mở Khóa" class="default-icon " data-placement="top" data-original-title="Mở"><i class="fa fa-unlock"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <form class="" role="form">
+                                        <div class="dataTables_length" id="table_list_length">
+                                            <label>
+                                                Hiển thị
+                                                <select ng-change="GetListBank()" name="table_list_length" id="table_list_length" ng-model="table_list_length" ng-init="table_list_length='10'" aria-controls="table_list" class="form-control input-sm">
+                                                    <option  value="10">10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select>
+                                                Bản ghi
+                                            </label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="pager">
+                                        <div class="dataTables_paginate">
+                                            <pagination num-pages="numPages" total-items="totalRow" ng-model="currentPage" ng-change="pageChanged()" max-size="maxSize" class="pagination-sm" items-per-page="itemsPerPage" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+            </div>
+            <!-- /.page-content-area -->
+        </div>
+        <!-- /.page-content -->
+    </div>
+    <div class="modal fade" id="block-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index: 1000000;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title text-center" id="myModalLabel">Thông báo khóa</h4>
+                </div>
+                <div class="modal-body text-center">Bạn chắc chắn muốn khóa bản ghi này!</div>
+                <div class="modal-footer text-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                    <input type="submit" ng-click="UpdateStatus()" value="Đồng ý" class="btn btn-primary" data-dismiss="modal">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="unblock-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="z-index: 1000000;">
+        <div class=" modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title text-center" id="myModalLabel">Thông báo mở khóa</h4>
+                </div>
+                <div class="modal-body text-center">Bạn chắc chắn muốn mở khóa bản ghi này!</div>
+                <div class="modal-footer text-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                    <input type="submit" ng-click="UpdateStatus()" value="Đồng ý" class="btn btn-primary" data-dismiss="modal">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#notice').show();
+            setTimeout(function () {
+                $('#notice').fadeOut();
+            }, 5000);
+        });
+    </script>
+}
