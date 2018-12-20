@@ -1,0 +1,108 @@
+﻿@using PromotionCMS.Areas.Admin.Models
+@{
+    ViewBag.Title = "Danh sách điêm bán chưa có kinh vĩ độ";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div ng-controller="SalePointController" id="angularData">
+    <div class="main-content">
+        <span ng-init="GetListLLNUll()"></span>
+        <div class="breadcrumbs" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+                <li>Danh sách điêm bán chưa có kinh vĩ độ</li>
+            </ul>
+            <!-- /.breadcrumb -->
+            @* <div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+        </div>
+        <div class="page-content">
+            <div class="page-content-area">
+                <div class="page-header">
+                    <h1>Danh sách điêm bán chưa có kinh vĩ độ</h1>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <form class="form-horizontal row clearfix" role="form">
+                            <div class="clearfix form-actions center">
+                                <a href="@Url.Action("UploadSp", "SalePoint")" class="btn btn-primary">Quay lại</a>
+                            </div>
+                        </form>
+                        <div class="dataTables_wrapper form-inline no-footer">
+                            <table id="table_list" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%" style="min-width: 2000px">
+                                <thead>
+                                    <tr>
+                                        <th width="50" class="center">STT</th>
+                                        <th>Tên Điểm bán</th>
+                                        <th>Tên Merchant</th>
+                                        <th>Tên Thương hiệu</th>
+                                        <th>Ngành hàng</th>
+                                        <th>Tỉnh/Thành phố</th>
+                                        <th>Quận huyện</th>
+                                        <th>Xã phường</th>
+                                        <th>Địa chỉ</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Website</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody ng-if="ListData1.length>0" ng-cloak>
+                                    <tr ng-repeat="item in ListData1">
+                                        <td class="center">{{item.index}}</td>
+                                        <td>{{item.SP_NAME}}</td>
+                                        <td>{{item.SP_MERCHANT_NAME}}</td>
+                                        <td>{{item.SP_TM_NAME}}</td>
+                                        <td>{{item.TM_NAME}}</td>
+                                        <td>{{item.PROVINCE_NAME}}</td>
+                                        <td>{{item.DISTRICT_NAME}}</td>
+                                        <td>{{item.WARD_NAME}}</td>
+                                        <td>{{item.SP_ADDRESS}}</td>
+                                        <td>{{item.SP_PHONE}}</td>
+                                        <td>{{item.SP_WEBSITE}}</td>
+                                        <td>
+                                            <span ng-if="item.STATUS === '0'" class="label label-sm label-danger">Khóa</span>
+                                            <span ng-if="item.STATUS === '1'" class="label label-sm label-success">Hoạt động</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <form class="" role="form">
+                                        <div class="dataTables_length" id="table_list_length">
+                                            <label>
+                                                Hiển thị
+                                                <select ng-change="GetListLLNUll()" name="table_list_length" id="table_list_length" ng-model="table_list_length" ng-init="table_list_length='10'" aria-controls="table_list" class="form-control input-sm">
+                                                    <option value="10">10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select>
+                                                Bản ghi
+                                            </label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="pager">
+                                        <div class="dataTables_paginate">
+                                            <pagination num-pages="numPages" total-items="totalRow" ng-model="currentPage" ng-change="pageChanged1()" max-size="maxSize" class="pagination-sm" items-per-page="itemsPerPage" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+            </div>
+            <!-- /.page-content-area -->
+        </div>
+        <!-- /.page-content -->
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+      
+    </script>
+}

@@ -1,0 +1,212 @@
+﻿@using PromotionCMS.Areas.Admin.Models
+@model PromotionCMS.Models.SALE_POINT
+@{
+    ViewBag.Title = "Thông tin chi tiết điểm bán";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="@Url.Content("~/Resources/plugin/ckfinder/ckfinder.js")" type="text/javascript"></script>
+<div class="main-content" ng-controller="CategoryController">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý điểm bán</li>
+            <li>Thông tin chi tiết điểm bán</li>
+        </ul>
+        <!-- /.breadcrumb -->
+        @* <div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Thông tin chi tiết điểm bán</h1>
+            </div>
+            <div class="row">
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error ">@TempData["Message"]</span>
+                    </div>
+                }
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <form class="form-horizontal" id="form" role="form" action="" method="POST">
+                        <input type="hidden" id="SpId" name="SpId" maxlength="300" value="@Model.SP_ID" class="form-control">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top">Tên điểm bán<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <input type="text" id="SpName" name="SpName" maxlength="300" disabled="disabled" value="@Model.SP_NAME" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top">Tên merchant<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <input type="text" id="SpMerchantName" name="SpMerchantName" disabled="disabled" maxlength="300" value="@Model.SP_MERCHANT_NAME" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top">Tên thương hiệu<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <input id="SpTmName" name="SpTmName" maxlength="300" list="SpTmNameList" disabled="disabled" value="@Model.SP_TM_NAME" class="form-control" multiple>
+                                <datalist id="SpTmNameList"></datalist>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Ngành hàng <font style="color: red">(*)</font></label>
+                            <div class="col-sm-9">
+                                <select id="TmId" name="TmId" class="form-control" disabled="disabled">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="col-md-6 control-label no-padding p_top" for="form-field-1">Tỉnh/Thành Phố<font style="color: red">(*)</font> </label>
+                                <div class="col-md-6">
+                                    <select id="ProvinceName" name="ProvinceName" class="form-control" disabled="disabled">
+                                        <option value="@Model.PROVINCE_NAME">@Model.PROVINCE_NAME</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 ">
+                                <label class="col-md-3 control-label p_top" style="margin-left: 35px" for="form-field-1">Quận/Huyện <font style="color: red">(*)</font></label>
+                                <div class="col-md-6 ">
+                                    <select id="DistrictName" name="DistrictName" class="form-control" disabled="disabled">
+                                        <option value="@Model.DISTRICT_NAME">@Model.DISTRICT_NAME</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="col-md-6 control-label no-padding p_top" for="form-field-1">Phường/Xã</label>
+                                <div class="col-md-6">
+                                    <select id="WardName" name="WardName" class="form-control" disabled="disabled">
+                                        <option value="@Model.WARD_NAME">@Model.WARD_NAME</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 ">
+                                <label class="col-md-3 control-label p_top" style="margin-left: 35px" for="form-field-1">Địa chỉ<font style="color: red">(*)</font></label>
+                                <div class="col-md-6 ">
+                                    <input type="text" id="SpAddress" name="SpAddress" maxlength="300" disabled="disabled" value="@Model.SP_ADDRESS" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="col-md-6 control-label no-padding p_top" for="form-field-1">Số điện thoại </label>
+                                <div class="col-md-6">
+                                    <input type="text" id="SpPhone" name="SpPhone" maxlength="12" disabled="disabled" value="@Model.SP_PHONE" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-6 ">
+                                <label class="col-md-3 control-label p_top" style="margin-left: 35px" for="form-field-1">Website</font></label>
+                                <div class="col-md-6 ">
+                                    <input type="text" id="SpWebsite" name="SpWebsite" maxlength="200" disabled="disabled" value="@Model.SP_WEBSITE" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top">Mô tả</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" name="SpDescription" id="SpDescription" disabled="disabled" style="-moz-min-width: 100%; -ms-min-width: 100%; -o-min-width: 100%; -webkit-min-width: 100%; min-width: 100%; min-height: 100px">@Model.SP_DESCRIPTION</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Upload Ảnh </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="ImageUrl" id="ImageUrl" disabled="disabled" value="@Model.IMAGE_URL" class="col-sm-9" style="height: 35px">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1"> </label>
+                            <div class="col-sm-9">
+                                <img style="max-width: 200px; max-height: 200px; border: 1px solid" src="@Model.IMAGE_URL" id="imageMerchant" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="col-md-6 control-label no-padding p_top" for="form-field-1">Ngày tạo </label>
+                                <div class="col-md-6">
+                                    <b>@Model.CREATED_ON</b>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 ">
+                                <label class="col-md-3 control-label p_top" style="margin-left: 35px" for="form-field-1">Người tạo</font></label>
+                                <div class="col-md-6 ">
+                                    <b>@Model.CREATED_BY</b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="col-md-6 control-label no-padding p_top" for="form-field-1">Ngày sửa </label>
+                                <div class="col-md-6">
+                                    <b>@Model.MODIFIED_ON</b>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 ">
+                                <label class="col-md-3 control-label p_top" style="margin-left: 35px" for="form-field-1">Người sửa</font></label>
+                                <div class="col-md-6 ">
+                                    <b>@Model.MODIFIED_BY</b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Trạng thái</label>
+                            <div class="col-sm-9">
+                                @{
+                                    if (Model.STATUS == "1")
+                                    {
+                                        <b style="color: green">Hoạt động</b>
+                                    }
+                                    else
+                                    {
+                                        <b style="color: red">Tạm khóa</b>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <a href="@Url.Action("Index", "SalePoint")" class="btn btn-default">Quay lại</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+<!-- /.main-content -->
+@section scripts{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Listparent")',
+                dataType: "json",
+                data: {},
+                success: function (states) {
+                    $.each(states,
+                        function (i, state) {
+                            if (state.Value == '@Model.TM_ID.ToString()') {
+                                $("#TmId").append("<option selected value=\"" + state.Value + "\">" + state.Text + "</option>");
+                            } else {
+                                $("#TmId").append("<option value=\"" + state.Value + "\">" + state.Text + "</option>");
+                            }
+                        });
+                },
+                error: function (ex) {
+                }
+            });
+        });
+
+
+    </script>
+}

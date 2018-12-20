@@ -1,0 +1,74 @@
+﻿@using PromotionCMS.Library
+@{
+    ViewBag.Title = "Khuyến Mãi";
+}
+@if (ReferenceEquals(TempData["RspCode"], "99"))
+{
+    <div class="col-md-12">
+        <span class="error">@TempData["Message"]</span>
+    </div>
+
+}
+<section class="banner" id="sale">
+    <div class="page-cover" style="background-image: url(/Resources/website/images/news.jpg)">
+        <div class="container">
+            <div class="cover-text">
+                <div class="title-box text-center">Khuyến mãi</div>
+                <div class="description-box">
+                    <p>Cập nhật các thông tin khuyến mãi mới nhất.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="news-page" ng-controller="NewsController">
+    <span ng-init="GetListPost()"></span>
+    <div class="container">
+        <div class="row">
+            <div class="leftbar listnews col-md-8 col-sm-8 col-xs-12">
+                <div class="title-pages-news">
+                    <!-- ngIf: ObjNews !== null -->
+                    <span ng-if="ObjNews !== null" class="title-page ng-binding ng-scope">/  Cập nhật lúc {{ObjNews.CREATED_DATE | formatjsondate : 'dd/MM/yyyy hh:mm a'}}</span>
+                    <!-- end ngIf: ObjNews !== null -->
+                </div>
+                <div class="content-newspage">
+                    <ul class="news-listarchive">
+                        <!-- ngIf: ObjNews !== null -->
+                        <li class="big-news" ng-if="ObjNews !== null" ng-cloak>
+                            <span class="img-news">
+                                <img src="{{ObjNews.POST_THUMBNAIL}}" alt="{{ObjNews.POST_TITLE}}">
+                            </span>
+                            <div class="title-content">
+                                <a ng-href="/tin-tuc-chi-tiet/{{ObjNews.POST_ALIAS}}" title="{{ObjNews.POST_TITLE}}">{{ObjNews.POST_TITLE | strLimit: 104}}</a>
+                                <p class="date-up">{{ObjNews.CREATED_DATE | formatjsondate : 'dd/MM/yyyy hh:mm a'}}</p>
+                                <span class="excerp" title="{{ObjNews.POST_DESCRIPTION}}">{{ObjNews.POST_DESCRIPTION | strLimit: 250}}</span>
+                                <a class="readmore" ng-href="/tin-tuc-chi-tiet/{{ObjNews.POST_ALIAS}}">Xem chi tiết</a>
+                            </div>
+                        </li>
+                        <li ng-if="ListData.length>0" class="small-news" ng-repeat="item in ListData" ng-cloak>
+                            <span class="img-news"><img src="{{item.POST_THUMBNAIL}}" alt="{{item.POST_TITLE}}"></span>
+                            <div class="title-content">
+                                <a ng-href="/tin-tuc-chi-tiet/{{item.POST_ALIAS}}" title="{{item.POST_TITLE}}">{{item.POST_TITLE | strLimit: 104}}</a>
+                                <p class="date-up">{{item.CREATED_DATE | formatjsondate : 'dd/MM/yyyy hh:mm a'}}</p>
+                                <span class="excerp" title="{{item.POST_DESCRIPTION }}">{{item.POST_DESCRIPTION | strLimit: 250}}</span>
+                                <a class="readmore" ng-href="/tin-tuc-chi-tiet/{{item.POST_ALIAS}}">Xem chi tiết</a>
+                            </div>
+                        </li>
+
+                    </ul>
+                    <div class="clearfix"></div>
+                    <div class="">
+                        <pagination num-pages="numPages" total-items="totalRow" ng-model="currentPage" ng-change="pageChanged()" max-size="maxSizeS" class="pagination-sm" items-per-page="itemsPerPage" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+                    </div>
+                    <!--End .pagging-->
+                </div>
+                <!--End .list-newspage-->
+            </div>
+            <!--End .leftbar-->
+            <div class="rightbar bannerads pull-right col-md-3 col-sm-3 col-xs-12">
+            </div>
+            <!--End rightbar-->
+        </div>
+    </div>
+</section>
+

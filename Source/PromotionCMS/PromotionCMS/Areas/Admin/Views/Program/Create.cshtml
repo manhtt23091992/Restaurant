@@ -1,0 +1,457 @@
+﻿@{
+    /**/
+
+    ViewBag.Title = "Cập nhật thông tin khuyến mại";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    .no_checkbox > i.jstree-checkbox {
+        display: none;
+    }
+</style>
+<div id="loading"></div>
+<div class="main-content">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý Chương Trình Khuyến Mại</li>
+            <li>Cập nhật thông tin khuyến mại(Thêm mới)</li>
+        </ul>
+        <!-- /.breadcrumb -->
+        @*<div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Cập nhật thông tin khuyến mại</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-12" id="errorProgram">
+                </div>
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error">@TempData["Message"]</span>
+                    </div>
+                }
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <form class="form-horizontal" id="form" role="form" action="@Url.Action("Create")" method="POST">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top">Mã tin khuyến mại <span class="red">*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" id="PgId" name="PgId" maxlength="200" class="col-xs-10 col-sm-5">
+                                <span id='checkPgId'></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right">Tiêu đề khuyến mãi <span class="red">*</span></label>
+                            <div class="col-sm-9">
+                                <textarea cols="3" id="PgName" name="PgName" maxlength="200" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="clear clear-20"></div>
+                        <div class="page-header">
+                            <h1>Thời gian áp dụng khuyến mại</h1>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Thời gian bắt đầu <span class="red">*</span></label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group date">
+                                            <input class="form-control StartDate" id="StartDate" name="StartDate" type="text" placeholder=" / / " autocomplete="off" />
+                                            <span class="input-group-addon" style="font-size: 8px !important;">
+                                                <span class="fa fa-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Kết thúc <span class="red">*</span></label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group date">
+                                            <input class="form-control EndDate" id="EndDate" name="EndDate" type="text" placeholder=" / / " autocomplete="off"/>
+                                            <span class="input-group-addon" style="font-size: 8px !important;"> <span class="fa fa-calendar"></span> </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear clear-20"></div>
+                        <div class="page-header">
+                            <h1>Áp dụng chương trình khuyến mãi cho các điểm bán</h1>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="select-recive">
+                                    <div class="select-recive__header">
+                                        <table>
+                                            <tr>
+                                                <td width="20">
+                                                    <input type="checkbox" class="select-all" id="tmAll">
+                                                </td>
+                                                <td>
+                                                    <b>Danh mục ngành hàng</b>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <input type="text" class="form-control live-search-box" id="search-tm" placeholder="Tìm kiếm...">
+                                    </div>
+                                    <div class="select-recive__content live-search-list">
+                                        <span id='checkTmChecked'></span>
+                                        <div id="tm"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="select-recive">
+                                    <div class="select-recive__header">
+                                        <table>
+                                            <tr>
+                                                <td width="20">
+                                                    <input type="checkbox" class="select-all" id="spAll">
+                                                </td>
+                                                <td>
+                                                    <b>Danh sách điểm bán thuộc ngành hàng</b>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <input type="text" id="search-sp" class="form-control live-search-box" placeholder="Tìm kiếm...">
+                                    </div>
+                                    <div class="css-treeview select-recive__content" id="salepoint">
+                                        <span id='checkSpChecked'></span>
+                                        <div id="sp"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="clearfix form-actions text-center">
+                            <div class="col-md-12">
+                                <a href="@Url.Action("Index", "Program")" class="btn btn-default">Quay lại</a>
+                                <button type="submit" class="btn btn-primary">Lưu lại</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $("#StartDate").datetimepicker({
+            timepicker: true,
+            closeOnDateSelect: false,
+            closeOnTimeSelect: true,
+            initTime: true,
+            format: 'd-m-Y H:i:s',
+            roundTime: 'ceil',
+            onShow: function(dp, $input) {
+                $("#EndDate").datetimepicker({
+                    minDate: dp
+                });
+            }
+        });
+        $("#EndDate").datetimepicker({
+            timepicker: true,
+            closeOnDateSelect: false,
+            closeOnTimeSelect: true,
+            initTime: true,
+            format: 'd-m-Y H:i:s',
+            onShow: function(currentTime, $input) {
+                $("#StartDate").datetimepicker({
+                    maxDate: currentTime
+                });
+            }
+        });
+        $(document).ready(function() {
+            var treeModel = null;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("LoadTabTm")',
+                dataType: "json",
+                data: {},
+                success: function(data) {
+                    treeModel = data.RspList;
+                    $("#tm").jstree({
+                        "core": {
+                            "data": treeModel
+                        },
+                        "checkbox": {
+                            "keep_selected_style": false
+                        },
+                        "search": {
+                            "case_insensitive": true,
+                            "show_only_matches": true
+                        },
+                        "plugins": ["themes", "json_data", "ui", "checkbox", "search"]
+                    });
+
+                }
+            });
+        });
+        $(document).ready(function() {
+            $("#tmAll").change(function() {
+                if ($('#tmAll').prop('checked') == true) {
+                    jQuery("#tm").jstree("check_all");
+                } else {
+                    $('#tm').jstree(true).deselect_all();
+                }
+            });
+        });
+        $(document).ready(function() {
+            $("#spAll").change(function() {
+                if ($('#spAll').prop('checked') == true) {
+                    jQuery("#sp").jstree("check_all");
+                } else {
+                    $('#sp').jstree(true).deselect_all();
+                }
+
+            });
+        });
+        $(document).ready(function() {
+            $("#search-tm").keyup(function() {
+                var value = document.getElementById("search-tm").value;
+                console.log(value);
+                $('#tm').jstree('search', value);
+            });
+        });
+        $(document).ready(function() {
+            $("#search-sp").keyup(function() {
+                var value = document.getElementById("search-sp").value;
+                console.log(value);
+                $('#sp').jstree('search', value);
+            });
+        });
+
+        function arr_diff(a1, a2) {
+
+            var a = [], diff = [];
+
+            for (var i = 0; i < a1.length; i++) {
+                a[a1[i]] = true;
+            }
+
+            for (var i = 0; i < a2.length; i++) {
+                if (a[a2[i]]) {
+                    delete a[a2[i]];
+                } else {
+                    a[a2[i]] = true;
+                }
+            }
+
+            for (var k in a) {
+                diff.push(k);
+            }
+
+            return diff;
+        }
+
+        var treeModelsp = null;
+
+        var arr2 = null;
+        $(function() {
+            $('#tm').on('changed.jstree',function(e, data) {
+                    var arr = null;
+                    var check = null;
+                    var arr1 = null;
+                    arr1 = $("#tm").jstree('get_checked');
+                    if (data.action === 'deselect_all') {
+                        treeModelsp = null;
+                        arr2 = null;
+                        $('#sp').jstree(true).settings.core.data = treeModelsp;
+                        $('#sp').jstree(true).refresh();
+                    } else {
+                        if (data.action === 'deselect_node') {
+                            check = arr_diff(arr1, arr2);
+                            if (check != null) {
+                                for (var i = 0; i < check.length; i++) {
+                                    while (arr2.indexOf(check[i]) !== -1) {
+                                        arr2.splice(arr2.indexOf(check[i]), 1);
+                                    }
+                                    var id = treeModelsp.findIndex(x => x.id === check[i]);
+                                    treeModelsp.splice(id, 1);
+                                }
+                            }
+                            console.log(treeModelsp);
+                            $('#sp').jstree(true).settings.core.data = treeModelsp;
+                            $('#sp').jstree(true).refresh();
+                        } else {
+                            if (arr2 != null) {
+                                arr = arr_diff(arr1, arr2);
+                            } else {
+                                arr = arr1;
+                            }
+                            arr2 = arr1;
+                            console.log(arr);
+                            $("#tm").find(".jstree-undetermined").each(
+                                function(i, element) {
+                                    arr.push($(element).closest('.jstree-node').attr("id"));
+                                }
+                            );
+
+                            if (typeof arr !== 'undefined' && arr !== null && arr.length > 0) {
+                                $('#checkTmChecked').html('').css('color', 'red');
+                                $.ajax({
+                                    type: "POST",
+                                    url: '@Url.Action("LoadTabSp")',
+                                    dataType: "json",
+                                    data: { tmId: arr, pgGuid: null },
+                                    success: function(data) {
+                                        if (treeModelsp != null) {
+                                            treeModelsp = treeModelsp.concat(data.Data);
+                                        } else {
+                                            treeModelsp = data.Data;
+                                        }
+                                        console.log(treeModelsp);
+                                        $("#sp").jstree({
+                                            "core": {
+                                                "data": treeModelsp
+                                            },
+                                            "checkbox": {
+                                                "keep_selected_style": false
+                                            },
+                                            "search": {
+                                                "case_insensitive": true,
+                                                "show_only_matches": true
+                                            },
+                                            "plugins": ["themes", "json_data", "ui", "checkbox", "search"]
+                                        });
+                                        $('#sp').jstree(true).settings.core.data = treeModelsp;
+                                        $('#sp').jstree(true).refresh();
+                                    }
+                                });
+                            } else {
+                                $('#sp').jstree(true).settings.core.data = null;
+                                $('#sp').jstree(true).refresh();
+                                $('#checkTmChecked').html('Bạn chưa chọn ngành hàng').css('color', 'red');
+                            }
+                        }
+                    }
+                });
+        });
+        $(document).ready(function() {
+            var val = '';
+            $("#PgId").change(function() {
+                val = $("#PgId").val();
+                if (val !== '') {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Checkid")',
+                        dataType: "json",
+                        data: { id: val },
+                        success: function(states) {
+                            if (!states.success) {
+                                $('#checkPgId').html('Chương trình đã tồn tại').css('color', 'red');
+                                $(':button:submit').attr('disabled', 'disabled');
+                            } else {
+                                $('#checkPgId').html('').css('color', 'red');
+                                $(':button:submit').removeAttr('disabled');
+                            }
+                        },
+                        error: function(ex) {
+                            alert("Failed to retrieve states." + ex);
+                        }
+                    });
+                }
+                return false;
+            });
+        });
+        $(document).ready(function() {
+            $('#form').validate({
+                errorElement: "span", // contain the error msg in a span tag
+                errorClass: 'error',
+                errorPlacement: function(error, element) { // render error placement for each input type
+                    if (element.hasClass("StartDate")) {
+                        error.insertAfter($(element).closest('.form-group').children('div').children().last());
+                    } else if (element.hasClass("EndDate")) {
+                        error.insertAfter($(element).closest('.form-group').children('div').children().last());
+                    } else {
+                        error.insertAfter(element);
+                        // for other inputs, just perform default behavior
+                    }
+                },
+                ignore: "",
+                rules: {
+                    PgId: {
+                        required: true,
+                        maxlength: 200
+                    },
+                    PgName: {
+                        required: true,
+                        maxlength: 200
+                    },
+                    StartDate: {
+                        required: true
+                    },
+                    EndDate: {
+                        required: true
+                    }
+                },
+                messages: {
+                    PgId: {
+                        required: "Mã tin khuyến mại bắt buộc nhập",
+                        maxlength: "Mã tin khuyến mại có độ dài từ 1 – 200 ký tự"
+                    },
+                    PgName: {
+                        required: "Tiêu đề khuyến mại bắt buộc nhập",
+                        maxlength: "Tiêu đề khuyến mại có độ dài từ 1 – 200 ký tự"
+                    },
+                    StartDate: {
+                        required: "Thời gian bắt đầu bắt buộc nhập"
+                    },
+                    EndDate: {
+                        required: "Thời gian kết thúc bắt buộc nhập"
+                    }
+                },
+                submitHandler: function (form) {
+                    $('#loading').append('<div class="loader-wraper"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>');
+                    var spId = $("#sp").jstree('get_checked');
+                    var tmId = $("#tm").jstree('get_checked');
+                    $("#tm").find(".jstree-undetermined").each(
+                        function(i, element) {
+                            tmId.push($(element).closest('.jstree-node').attr("id"));
+                        }
+                    );
+                    if (typeof spId !== 'undefined' && spId !== null && spId.length > 0) {
+                        $('#checkSpChecked').html('').css('color', 'red');
+                        $.ajax({
+                            type: "POST",
+                            url: form.action,
+                            dataType: "json",
+                            data: {
+                                spId: spId,
+                                tmId: tmId,
+                                PgId: $("#PgId").val(),
+                                PgName: $("#PgName").val(),
+                                StartDate: $("#StartDate").val(),
+                                EndDate: $("#EndDate").val()
+                            },
+                            success: function(data) {
+                                if (!data.Success) {
+                                    $("#errorProgram").append('<span class="error">' + data.Message + '</span>');
+                                } else {
+                                    alert("Thêm mới chương trình thành công");
+                                    window.location.replace(data.ReturnUrl);
+                                }
+                            }
+                        });
+                    } else {
+                        $('#checkSpChecked').html('Bạn chưa chọn điểm bán').css('color', 'red');
+                    }
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,107 @@
+﻿@using PromotionCMS.Areas.Admin.Models
+@model PromotionCMS.Models.CMS_USERS
+@{
+    ViewBag.Title = "Đổi mật khẩu";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="@Url.Content("~/Resources/plugin/ckfinder/ckfinder.js")" type="text/javascript"></script>
+<div class="main-content" ng-controller="CategoryController">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý người dùng</li>
+            <li>Đổi mật khẩu</li>
+        </ul>
+        <!-- /.breadcrumb -->
+        @* <div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Thay đổi mật khẩu</h1>
+            </div>
+            <div class="row">
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error">Kết nối bị gián đoạn. Vui lòng thử lại</span>
+                    </div>
+
+                }
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <form class="form-horizontal" id="form" role="form" action="@Url.Action("ChangePass")" method="POST">
+                        <input type="hidden" id="UserId" name="UserId" value="@Model.USER_ID">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Mật Khẩu mới<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <input type="password" id="Password" name="Password" maxlength="50" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Nhập lại mật khẩu mới<font style="color: red">(*)</font></label>
+                            <div class="col-sm-9">
+                                <input type="password" id="ConfirmPassword" name="ConfirmPassword" maxlength="50" class="form-control">
+                                <span id='message'></span>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <a href="@Url.Action("Index", "UsersManager")" class="btn btn-default">Quay lại</a>
+                                <button type="submit" id="submit" class="btn btn-primary">Lưu lại</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+<!-- /.main-content -->
+@section scripts{
+    <script type="text/javascript">
+        $('#ConfirmPassword').on('keyup', function () {
+            if ($('#Password').val() != $('#ConfirmPassword').val()) {
+                $('#message').html('Thông tin mật khẩu nhập lại chưa chính xác').css('color', 'red');
+                document.getElementById('submit').disabled = true;
+            } else {
+                $('#message').html('');
+                document.getElementById('submit').disabled = false;
+            }
+        });
+        $(document).ready(function () {
+            $('#form').validate({
+                rules: {
+                   
+                    Password: {
+                        required: true,
+                        minlength: 1,
+                        maxlength: 50
+                    },
+                    ConfirmPassword: {
+                        required: true,
+                        minlength: 1,
+                        maxlength: 50
+                    }
+                },
+                messages: {
+                   
+                    Password: {
+                        required: "Mật khẩu bắt buộc nhập",
+                        minlength: "Mật khẩu có độ dài từ 1 – 50 ký tự",
+                        maxlength: "Mật khẩu có độ dài từ 1 – 50 ký tự"
+                    },
+                    ConfirmPassword: {
+                        required: "Nhập lại mật khẩu bắt buộc nhập",
+                        minlength: "Nhập lại mật khẩu có độ dài từ 1 – 50 ký tự",
+                        maxlength: "Nhập lại mật khẩu có độ dài từ 1 – 50 ký tự"
+                    }
+                }
+            });
+        });
+    </script>
+}

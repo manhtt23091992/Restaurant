@@ -1,0 +1,125 @@
+﻿@using PromotionCMS.Areas.Admin.Models
+@using PromotionCMS.Models
+@model MERCHANT_CATEGORY
+@{
+    ViewBag.Title = "Cập nhật đối tác liên kết";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="@Url.Content("~/Resources/plugin/ckfinder/ckfinder.js")" type="text/javascript"></script>
+<div class="main-content" ng-controller="">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý đối tác liên kết</li>
+            <li>Cập nhật đối tác liên kết(Sửa)</li>
+        </ul>
+        <!-- /.breadcrumb -->
+        @* <div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Cập nhật đối tác liên kết</h1>
+            </div>
+            <div class="row">
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error">@TempData["Message"]</span>
+                    </div>
+                }
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    @if (Model != null && Model.BANNER_ID > 0)
+                    {
+                        <form class="form-horizontal" id="form" role="form" action="@Url.Action("Edit")" method="POST">
+                            <input type="hidden" id="Bannerid" name="Bannerid" value="@Model.BANNER_ID"/>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right p_top">Tên đối tác<font style="color: red">(*)</font> </label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="BannerTitle" name="BannerTitle" value="@Model.BANNER_TITLE" maxlength="300" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Đường dẫn website <font style="color: red">(*)</font> </label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="Link" name="Link" value="@Model.LINK" maxlength="300" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="form-field-1">Upload Ảnh </label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="ImageUrl" id="ImageUrl" value="@Model.IMAGE_URL" class="col-sm-9"> <button class="btn btn-primary" id="btnSelectImg" name="btnSelectImg"><i class="fa fa-folder"></i><span class="hidden-xs">&nbsp;Chọn ảnh</span></button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="form-field-1"> </label>
+                                <div class="col-sm-9">
+                                    <img style="max-width: 200px; max-height: 200px; border: 1px solid" id="imageMerchant"/>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                            <div class="clearfix form-actions">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <a href="@Url.Action("Index", "Merchant")" class="btn btn-default">Quay lại</a>
+                                    <button type="submit" class="btn btn-primary">Lưu lại</button>
+                                </div>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+<!-- /.main-content -->
+@section scripts{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#btnSelectImg").click(function () {
+                var finder = new CKFinder();
+
+                finder.selectActionFunction = function (fileUrl) {
+                    $('#ImageUrl').val(fileUrl);
+                    $('#imageMerchant').attr('src', fileUrl);
+                };
+                finder.popup();
+                return false;
+            });
+            var link = $('#ImageUrl').val();
+            $('#imageMerchant').attr('src', link);
+        });
+        $(document).ready(function () {
+            $('#form').validate({
+                rules: {
+                    BannerTitle: {
+                        required: true,
+                        minlength: 1,
+                        maxlength: 300
+                    },
+                    Link: {
+                        required: true,
+                        maxlength: 300
+                    }
+
+                },
+                messages: {
+                    BannerTitle: {
+                        required: "Tên đối tác bắt buộc nhập, có độ dài từ 1 – 300 ký tự",
+                        minlength: "Tên đối tác bắt buộc nhập, có độ dài từ 1 – 300 ký tự",
+                        maxlength: "Tên đối tác bắt buộc nhập, có độ dài từ 1 – 300 ký tự"
+                    },
+                    Link: {
+                        required: "Đường dẫn bắt buộc nhập, có độ dài từ 1 – 300 ký tự",
+                        maxlength: "Đường dẫn bắt buộc nhập, có độ dài từ 1 – 300 ký tự"
+                    }
+                }
+            });
+        });
+    </script>
+}

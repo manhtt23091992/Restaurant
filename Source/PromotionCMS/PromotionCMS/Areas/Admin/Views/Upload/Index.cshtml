@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Quản lý Upload";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="">
+    <div class="main-content">
+        <span ng-init=""></span>
+        <div class="breadcrumbs" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+                <li>Hệ thống</li>
+                <li>Quản lý Upload</li>
+            </ul>
+            <!-- /.breadcrumb -->
+            @* <div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+        </div>
+        <div class="page-content">
+            <div class="page-content-area">
+                <div class="page-header">
+                    <h1>Quản lý Upload</h1>
+                </div>
+                <div class="row">
+                    <button class="btn btn-primary" id="btnSelectImg" name="btnSelectImg"><i class="fa fa-folder"></i><span class="hidden-xs">&nbsp;Chọn ảnh</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+
+</div>
+@section scripts{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#btnSelectImg").click(function () {
+                var finder = new CKFinder();
+                finder.popup();
+                return false;
+            });
+        });
+       
+    </script>
+}
+

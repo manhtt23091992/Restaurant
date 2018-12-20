@@ -1,0 +1,254 @@
+﻿@using PromotionCMS.Areas.Admin.Models
+@using PromotionCMS.Models
+@model List<BANNER_SALE>
+@{
+    ViewBag.Title = "Phân quyền ưu tiên";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@{
+    var listprioritize = (List<BANNER_SALE>)ViewBag.prioritize;
+    var listnoprioritize = (List<BANNER_SALE>)ViewBag.noprioritize;
+}
+<script src="@Url.Content("~/Resources/plugin/ckfinder/ckfinder.js")" type="text/javascript"></script>
+<div class="main-content" ng-controller="BannerSaleController">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý Banner</li>
+            <li>Phân quyền ưu tiên</li>
+        </ul>
+        <!-- /.breadcrumb -->
+        @* <div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Phân quyền ưu tiên</h1>
+            </div>
+            <div class="row">
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error">Kết nối bị gián đoạn. Vui lòng thử lại</span>
+                    </div>
+
+                }
+                <div class="col-xs-12" style="height: 100%;">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <form class="form-horizontal" id="form" role="form">
+                        <table class="table">
+                            <tr>
+                                <td style="vertical-align: top">
+                                    <div class="select-recive">
+                                        <div class="select-recive__header">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <b>Danh sách ngân hàng không ưu tiên</b>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="select-recive__content no-max-height">
+                                            <div class="dataTables_wrapper form-inline no-footer">
+                                                <table id="table1" class="table table_list table-striped table-bordered table-hover" cellspacing="0" cellpadding="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="50" class="center">STT</th>
+                                                            <th>Lựa chọn</th>
+                                                            <th>Tiêu đề</th>
+                                                            <th>Mức độ ưu tiên</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @{
+                                                            var i = 1;
+                                                            foreach (var item in listnoprioritize)
+                                                            {
+                                                                <tr>
+                                                                    <td class="center">@i</td>
+                                                                    <td width="100">
+                                                                        <input type="checkbox"
+                                                                               class="form-control"
+                                                                               value="@item.BANNER_ID"
+                                                                               name="@item.BANNER_ID"
+                                                                               id="@item.BANNER_ID" />
+                                                                    </td>
+                                                                    <td>@item.BANNER_TITLE</td>
+                                                                    <td><span class="label label-sm label-danger">Không ưu tiên</span></td>
+
+                                                                </tr>
+                                                                i += 1;
+                                                            }
+                                                        }
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="50" class="center">
+                                    <div><a href="" id="GetBannerSaleChecked" class="green"><i class="fa fa-arrow-right" style="font-size:20px;" aria-hidden="true"></i></a></div>
+                                    <div><a href="" id="GetBannerSaleCheckedNot" class="green"><i class="fa fa-arrow-left" style="font-size:20px;" aria-hidden="true"></i></a></div>
+                                </td>
+                                <td style="vertical-align: top">
+                                    <div class="select-recive">
+                                        <div class="select-recive__header">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <b>Danh sách ngân hàng ưu tiên</b>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="select-recive__content no-max-height">
+                                            <div class="dataTables_wrapper form-inline no-footer">
+                                                <table id="table2" class="table table_list table-striped table-bordered table-hover" cellspacing="0" cellpadding="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Lựa chọn</th>
+                                                            <th>Tiêu đề/th>
+                                                            <th>Mức độ ưu tiên</th>
+                                                            <th>Sắp xếp</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="Ipchecked">
+                                                        @{
+                                                            foreach (var item1 in listprioritize)
+                                                            {
+                                                                <tr>
+                                                                    <td width="100">
+                                                                        <input type="checkbox"
+                                                                               class="form-control"
+                                                                               value="@item1.BANNER_ID"
+                                                                               name="@item1.BANNER_ID"
+                                                                               id="@item1.BANNER_ID" />
+                                                                    </td>
+                                                                    <td>@item1.BANNER_TITLE</td>
+                                                                    <td><span class="label label-sm label-success">Ưu tiên</span></td>
+                                                                    <td><input type="text" disabled="" style="width: 100px !important;" name="@item1.ORD" id="txt_@item1.BANNER_ID" value="@item1.ORD" class="@item1.BANNER_ID"></td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="clear"></div>
+                        <div class="clearfix form-actions text-center">
+                            <div class="col-md-12">
+                                <button type="submit" id="BannerUpdateOrd" class="btn btn-primary">Lưu</button>
+                                <a href="@Url.Action("Index", "BannerSale")" class="btn btn-default">Hủy</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+<!-- /.main-content -->
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#GetBannerSaleChecked').on('click',
+                function () {
+                    var prioritize = [];
+                    $('input:checked').each(function () {
+                        prioritize.push($(this).attr("value"));
+                    });
+                    $.ajax({
+                        url: "/BannerSale/BannerCheck",
+                        type: "POST",
+                        data: { bannerchecked: prioritize },
+                        dataType: "json",
+                        traditional: true,
+                        success: function (response) {
+                            if (response.success) {
+                                window.location.reload();
+                            } else {
+                                // DoSomethingElse()
+                                alert(response.responseText);
+                            }
+                        },
+                        error: function (response) {
+                            alert("Đang là quyền ưu tiên!"); //
+                        }
+                    });
+                });
+        });
+        $(document).ready(function () {
+            $('#GetBannerSaleCheckedNot').on('click',
+                function () {
+                    var prioritize = [];
+                    $('input:checked').each(function () {
+                        prioritize.push($(this).attr("value"));
+                    });
+                    $.ajax({
+                        url: "/BannerSale/BannerCheckNoPrioritize",
+                        type: "POST",
+                        data: { bannerchecked: prioritize },
+                        dataType: "json",
+                        traditional: true,
+                        success: function (response) {
+                            if (response.success) {
+                                window.location.reload();
+                            } else {
+                                // DoSomethingElse()
+                                alert(response.responseText);
+                            }
+                        },
+                        error: function (response) {
+                            alert("Đang là quyền không ưu tiên!"); //
+                        }
+                    });
+                });
+        });
+        $(document).ready(function () {
+            $("#Ipchecked>tr>td>input:checkbox").change(function () {
+                var id = $(this).val();
+                if ($('#' + id).prop('checked') === true) {
+                    $("#txt_" + id).prop("disabled", false);
+                } else {
+                    $("#txt_" + id).prop("disabled", true);
+                }
+            });
+        });
+        $(document).ready(function () {
+            $('#BannerUpdateOrd').on('click',
+                function () {
+                    var BannerPriority = new Array();
+                    var id = 0;
+                    $("#Ipchecked>tr>td>input:checked").each(function () {
+                        id = $(this).val();
+                        BannerPriority.push({ Id: id, Ord: $("." + id + "").val() });
+                    });
+                    $.ajax({
+                        url: '@Url.Action("PriorityUpdateOrd", "BannerSale")',
+                        type: "POST",
+                        data: JSON.stringify(BannerPriority),
+                        dataType: "json",
+                        traditional: true,
+                        contentType: "application/json; charset=utf-8",
+                        success: function (response) {
+                           alert("Cập nhật thành công");
+                           window.location.href = '@Url.Action("Index", "BannerSale")';
+                        },
+                        error: function (response) {
+                            alert("Kết nối bị gián đoạn. Vui lòng thử lại");
+                            window.location.href = '@Url.Action("Index", "BannerSale")';
+                        }
+                    });
+                });
+        });
+    </script>
+}

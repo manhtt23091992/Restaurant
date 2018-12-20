@@ -1,0 +1,72 @@
+﻿@using PromotionCMS.Models
+@{
+    ViewBag.Title = "Chi tiết tin khuyến mãi";
+}
+@{
+    var detailsNews = (POST)ViewBag.detailsNews;
+    var newsHot = (List<POST>)ViewBag.newHot;
+}
+@if (detailsNews != null && (newsHot != null))
+{
+    <section class="banner">
+        <div class="page-cover" style="background-image: url(/Resources/website/images/news.jpg)">
+            <div class="container">
+                <div class="cover-text">
+                    <div class="title-box text-center">@detailsNews.POST_TITLE</div>
+                    <div class="description-box">
+                        <p>@detailsNews.POST_DESCRIPTION</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="news-page">
+        <div class="container">
+            <div class="leftbar document-box listnews col-md-8 col-sm-8 col-xs-12">
+                <div class="title-pages-news">
+                    <span class="title-page">
+                        <a href="@Url.Action("Promotion","News")">Tin tức</a>
+                    </span>
+                </div>
+                <div class="content-newspage detail-news">
+                    @Html.Raw(detailsNews.POST_CONTENT)
+                    <div class="clearfix"></div>
+                    <div style="float: right">
+                        @if (Request.Url != null)
+                        {
+                            var link = Request.Url.ToString();
+                            <iframe src="https://www.facebook.com/plugins/like.php?href=@link&width=180&layout=button_count&action=like&size=large&show_faces=true&share=true&height=46&105605866259004" width="180" height="46" style="border: none; overflow: hidden" scrolling="no" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                        }
+                    </div>
+                    <div class="other-news">
+                        <div class="title-other-news">Xem bài khác</div>
+                        <ul class="other-list">
+                            @foreach (var item in newsHot)
+                            {
+                                <li>
+                                    <a href="/tin-tuc-chi-tiet/@item.POST_ALIAS">@item.POST_TITLE</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <!--End .other-news-->
+
+                </div>
+                <!--End .list-newspage-->
+            </div>
+            <!--End .leftbar-->
+            <div class="rightbar bannerads pull-right col-md-3 col-sm-3 col-xs-12">
+
+            </div>
+            <!--End rightbar-->
+        </div>
+        <!--End .container-->
+    </section>
+}
+else
+{
+    <div style="font-size: 20px; color: red; padding: 100px 0 50px 100px">
+        Tin tức ko tồn tại hoặc đang bị khóa
+    </div>
+}
+

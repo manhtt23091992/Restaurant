@@ -1,0 +1,178 @@
+﻿@using PromotionCMS.Areas.Admin.Models
+@using PromotionCMS.Models
+@model PROC_CATEGORY_SELECTBYID_Result
+@{
+    ViewBag.Title = "Sửa danh mục";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="@Url.Content("~/Resources/plugin/ckfinder/ckfinder.js")" type="text/javascript"></script>
+<div class="main-content" ng-controller="CategoryController">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý danh mục</li>
+            <li>Cập nhật danh mục(Sửa)</li>
+        </ul>
+        <!-- /.breadcrumb -->
+        @* <div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Cập nhật danh mục</h1>
+            </div>
+
+            <div class="row">
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+
+                    <div class="col-md-12">
+                        <span class="error">Kết nối bị gián đoạn. Vui lòng thử lại</span>
+                    </div>
+
+                }
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                @if (Model != null && Model.CATE_ID > 0)
+                {
+                    <form class="form-horizontal" role="form" action="@Url.Action("Edit")" method="POST">
+                        <input type="hidden" id="Cateid" name="Cateid" value="@Model.CATE_ID"/>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top">Tên danh mục<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <input type="text" id="CateName" name="CateName" class="form-control" value="@Model.CATE_NAME">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Cấp danh mục: </label>
+                            <div class="col-sm-9">
+                                <select id="ParentId" name="ParentId" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Mô tả<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" name="CateDescription" id="CateDescription" style="-moz-min-width: 100%; -ms-min-width: 100%; -o-min-width: 100%; -webkit-min-width: 100%; min-width: 100%; min-height: 100px">@Model.CATE_DESCRIPTION</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Keyword: </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="CateKeyword" id="CateKeyword" value="@Model.CATE_KEYWORD" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Link: </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="CatePermalink" id="CatePermalink" value="@Model.CATE_PERMALINK" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Ảnh: </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="CateThumbnail" id="CateThumbnail" value="@Model.CATE_THUMBNAIL" class="col-sm-9"> <button class="btn btn-primary" id="btnSelectImg" name="btnSelectImg"><i class="fa fa-folder"></i><span class="hidden-xs">&nbsp;Chọn ảnh</span></button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Ord<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="Ord" id="Ord" value="@Model.ORD" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Trạng thái<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                @Html.DropDownList("CateStatus", (new DropdownModel()).BindStatus(Model.CATE_STATUS), null, new {@id = "CateStatus", @name = "CateStatus", @class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <a href="@Url.Action("Index", "Category")" class="btn btn-default">Quay lại</a>
+                                <button type="submit" class="btn btn-primary">Lưu lại</button>
+                            </div>
+                        </div>
+                    </form>
+                }
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+<!-- /.main-content -->
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var catchild = '@Model.PARENT_ID';
+            $("#ParentId").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Listparent")',
+                dataType: 'json',
+                data: {},
+                success: function (states) {
+                    $.each(states, function (i, state) {
+                        if (state.Value === catchild) {
+                            $("#ParentId").append('<option selected="selected" value="' + state.Value + '">' + state.Text + '</option>');
+                        } else {
+                            $("#ParentId").append('<option value="' + state.Value + '">' + state.Text + '</option>');
+                        }
+                    });
+                },
+                error: function (ex) {
+                    alert('Failed to retrieve states.' + ex);
+                }
+            });
+            return false;
+        });
+        $(document).ready(function () {
+            $("#btnSelectImg").click(function () {
+                var finder = new CKFinder();
+
+                finder.selectActionFunction = function (fileUrl) {
+                    $('#CateThumbnail').val(fileUrl);
+                };
+                finder.popup();
+                return false;
+            });
+        });
+        $(document).ready(function () {
+            $('#form').validate({
+                rules: {
+                    CateName: {
+                        required: true
+                    },
+                    CateStatus: {
+                        required: true
+                    },
+                    CateDescription: {
+                        required: true
+                    },
+                    Ord: {
+                        required: true,
+                        number: true
+                    }
+                },
+                messages: {
+                    CateName: {
+                        required: "Bạn phải nhập tên danh mục"
+                    },
+                    CateDescription: {
+                        required: "Bạn phải nhập tên mô tả cho danh mục"
+                    },
+                    CateStatus: {
+                        required: "Bạn phải chọn Trạng thái"
+                    },
+                    Ord: {
+                        required: "Bạn phải nhập ORD",
+                        number: "Bạn phải nhập số"
+                    }
+                }
+            });
+        });
+    </script>
+}
+

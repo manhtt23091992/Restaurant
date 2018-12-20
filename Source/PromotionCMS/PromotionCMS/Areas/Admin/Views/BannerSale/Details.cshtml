@@ -1,0 +1,138 @@
+﻿@using System.Security.Policy
+@using PromotionCMS.Areas.Admin.Models
+@using PromotionCMS.Models
+@model BANNER_SALE
+@{
+    ViewBag.Title = "Chi tiết thông tin";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="@Url.Content("~/Resources/plugin/ckfinder/ckfinder.js")" type="text/javascript"></script>
+<div class="main-content" ng-controller="BannerSaleController">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý Banner</li>
+            <li>Chi tiết thông tin </li>
+        </ul>
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Chi tiết thông tin</h1>
+            </div>
+            <div class="row">
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error">@TempData["Message"]</span>
+                    </div>
+
+                }
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <form class="form-horizontal" id="form" role="form" action="" method="POST">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Tiêu đề<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                @Model.BANNER_TITLE
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Content</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" disabled="disabled" name="BannerDescription" maxlength="200" id="BannerDescription" style="-moz-min-width: 100%; -ms-min-width: 100%; -o-min-width: 100%; -webkit-min-width: 100%; min-width: 100%; min-height: 100px">@Model.BANNER_DESCRIPTION</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Upload Ảnh </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="ImageUrl" id="ImageUrl" disabled="disabled" value="@Model.IMAGE_URL" class="col-sm-9" style="height: 35px">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1"></label>
+                            <div class="col-sm-9">
+                                <img src="@Model.IMAGE_URL" width="150px" height="150px" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="">Ngày tạo:</label>
+                            <div class="col-sm-3">
+                                <div class='input-group date'>
+                                    @Model.CREATED_DATE
+                                </div>
+                            </div>
+                            <label class="col-sm-3 col-sm-pull-1 control-label no-padding-right" for="">Người tạo:</label>
+                            <div class="col-sm-3 col-sm-pull-1">
+                                <div class="input-group date">
+                                    @Model.CREATED_BY
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right" for="">Ngày sửa:</label>
+                            <div class="col-sm-3">
+                                <div class='input-group date'>
+                                    @Model.MODIFIED_ON
+                                </div>
+                            </div>
+                            <label class="col-sm-3 col-sm-pull-1 control-label no-padding-right" for="">Người sửa:</label>
+                            <div class="col-sm-3 col-sm-pull-1">
+                                <div class="input-group date">
+                                    @Model.MODIFIED_BY
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Trạng thái: </label>
+                            <div class="col-sm-9">
+                                @{
+                                    if (Model.BANNER_STATUS == "0")
+                                    {
+                                        <span class="label label-sm label-danger">Đã Khóa</span>
+                                    }
+                                    if (Model.BANNER_STATUS == "1")
+                                    {
+                                                        <span class="label label-sm label-success">Đã đăng</span>
+                                    }
+                                    if (Model.BANNER_STATUS == "2")
+                                    {
+                                         <span class="label label-sm label-warning">Chờ đăng</span>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <a href="@Url.Action("Index", "BannerSale")" class="btn btn-default">Quay lại</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+<!-- /.main-content -->
+@section scripts{
+    <script type="text/javascript">
+
+        CKEDITOR.replace('BannerDescription', {
+            toolbarGroups: [
+                { name: 'document', groups: ['mode', 'document'] },			// Displays document group with its two subgroups.
+                { name: 'clipboard', groups: ['clipboard', 'undo'] },			// Group's name will be used to create voice label.
+                '/',																// Line break - next group will be placed in new line.
+                { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+                { name: 'paragraph', groups: ['list', 'blocks', 'align', 'paragraph'] },
+                { name: 'links' },
+                { name: 'insert' }
+            ]
+
+        });
+
+    </script>
+}

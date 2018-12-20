@@ -1,0 +1,104 @@
+﻿@using System.Security.Policy
+@using PromotionCMS.Areas.Admin.Models
+@using PromotionCMS.Models
+@model SETTING
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="main-content" ng-controller="SettingsController">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý Tham số hệ thống</li>
+            <li>Chi tiết thông tin </li>
+        </ul>
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Chi tiết thông tin</h1>
+            </div>
+            <div class="row">
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error">@TempData["Message"]</span>
+                    </div>
+
+                }
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <form class="form-horizontal" id="form" role="form" action="" method="POST">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Code<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                @Model.ST_CODE
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Keyword<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                @Model.ST_KEY
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Value</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" disabled="disabled" name="value" maxlength="1000" id="value" style="-moz-min-width: 100%; -ms-min-width: 100%; -o-min-width: 100%; -webkit-min-width: 100%; min-width: 100%; min-height: 100px">@Model.ST_VALUE</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Ghi chú</label>
+                            <div class="col-sm-9">
+                                <input type="text" disabled="disabled" value="@Model.ST_NOTE" class="col-sm-9" style="-moz-min-width: 100%; -ms-min-width: 100%; -o-min-width: 100%; -webkit-min-width: 100%; min-width: 100%; min-height: 100px">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="form-field-1">Trạng thái: </label>
+                            <div class="col-sm-9">
+                                @{
+                                    if (Model.STATUS == "0")
+                                    {
+                                        <span class="label label-sm label-danger">Đã Khóa</span>
+                                    }
+                                    if (Model.STATUS == "1")
+                                    {
+                                        <span class="label label-sm label-success">Hoạt động</span>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <a href="@Url.Action("Index", "Settings")" class="btn btn-default">Quay lại</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+@section scripts{
+    <script type="text/javascript">
+
+        CKEDITOR.replace('value', {
+            toolbarGroups: [
+                { name: 'document', groups: ['mode', 'document'] },			// Displays document group with its two subgroups.
+                { name: 'clipboard', groups: ['clipboard', 'undo'] },			// Group's name will be used to create voice label.
+                '/',																// Line break - next group will be placed in new line.
+                { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+                { name: 'paragraph', groups: ['list', 'blocks', 'align', 'paragraph'] },
+                { name: 'links' },
+                { name: 'insert' }
+            ]
+
+        });
+
+    </script>
+}

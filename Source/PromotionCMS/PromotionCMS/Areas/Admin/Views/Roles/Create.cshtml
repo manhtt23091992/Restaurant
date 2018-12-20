@@ -1,0 +1,223 @@
+﻿@using PromotionCMS.Areas.Admin.Models
+@{
+    ViewBag.Title = "Cập nhật nhóm quyền";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="@Url.Content("~/Resources/plugin/ckfinder/ckfinder.js")" type="text/javascript"></script>
+<div class="main-content" ng-controller="RolesController">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li><i class="default-icon fa fa-home home-icon"></i><a href="#">Home</a></li>
+            <li>Quản lý nhóm quyền</li>
+            <li>Cập nhật nhóm quyền(Thêm mới)</li>
+        </ul>
+        <!-- /.breadcrumb -->
+        @* <div class="pull-right timer"> Đăng nhập lần cuối vào lúc 04/12/2015 01:42:56 </div>*@
+    </div>
+    <div class="page-content">
+        <div class="page-content-area">
+            <div class="page-header">
+                <h1>Cập nhật nhóm quyền</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-12" id="errorRoles">
+                </div>
+                @if (ReferenceEquals(TempData["RspCode"], "99"))
+                {
+                    <div class="col-md-12">
+                        <span class="error ">@TempData["Message"]</span>
+                    </div>
+                }
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <form class="form-horizontal" id="form" role="form" action="@Url.Action("Create")" method="POST">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top">Mã nhóm quyền<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <input type="text" id="RoleKey" name="RoleKey" maxlength="200" class="form-control">
+                                <span id='checkusername'></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Tên nhóm quyền<font style="color: red">(*)</font> </label>
+                            <div class="col-sm-9">
+                                <input type="text" id="RoleName" name="RoleName" maxlength="300" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right p_top" for="form-field-1">Ghi chú</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="RoleNote" name="RoleNote" maxlength="300" class="form-control">
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <ul class="nav nav-tabs">
+                            <li class="" id="cat"><a data-toggle="tab" href="#category">Danh mục</a></li>
+                            <li><a data-toggle="tab" href="#system">Hệ thống</a></li>
+                        </ul>
+
+                        <div class="tab-content" style="border: 1px solid #b0c4de;">
+                            <span id='checkRolesChecked'></span>
+                            <div class="tab-pane fade in active" id="category">
+                                <div id="treeCategoty">
+
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="system">
+                                <div id="treeSystem">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <a href="@Url.Action("Index","Roles")" class="btn btn-default">Quay lại</a>
+                                <button type="submit" id="submit" class="btn btn-primary">Lưu lại</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.page-content-area -->
+    </div>
+    <!-- /.page-content -->
+</div>
+<!-- /.main-content -->
+@section scripts{
+    <script type="text/javascript">
+        function GetTree(treeName, funcId) {
+            var treeModel = null;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("LoadTabRoles")',
+                dataType: "json",
+                data: { funcId: funcId },
+                success: function(data) {
+                    treeModel = data.RspList;
+                    //                console.log(treeModel);
+                    $("#" + treeName).jstree({
+                        "core": {
+                            "data": treeModel
+                        },
+                        "checkbox": {
+                            "keep_selected_style": false
+                        },
+                        "plugins": ["themes", "json_data", "ui", "checkbox"]
+                    });
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            GetTree("treeCategoty", "1");
+            GetTree("treeSystem", "2");
+            $("#cat").addClass("active");
+        });
+
+        $(document).ready(function() {
+            var val = '';
+            $("#RoleKey").change(function() {
+                val = $("#RoleKey").val();
+                if (val !== '') {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("ChekUserName")',
+                        dataType: "json",
+                        data: { roleKey: val },
+                        success: function(states) {
+                            if (!states.success) {
+                                $('#checkusername').html('Nhóm quyền đã tồn tại').css('color', 'red');
+                                document.getElementById('submit').disabled = true;
+                            } else {
+                                $('#checkusername').html('');
+                                document.getElementById('submit').disabled = false;
+                            }
+                        },
+                        error: function(ex) {
+                            alert("Failed to retrieve states." + ex);
+                        }
+                    });
+                }
+                return false;
+            });
+        });
+        $(document).ready(function() {
+            $('#form').validate({
+                rules: {
+                    RoleKey: {
+                        required: true,
+                        minlength: 1,
+                        maxlength: 200
+                    },
+                    RoleName: {
+                        required: true,
+                        minlength: 1,
+                        maxlength: 300
+                    },
+                    RoleNote: {
+                        maxlength: 300
+                    }
+                },
+                messages: {
+                    RoleKey: {
+                        required: "Mã nhóm quyền bắt buộc nhập",
+                        minlength: "Mã nhóm quyền có độ dài từ 1 – 200 ký tự”",
+                        maxlength: "Mã nhóm quyền có độ dài từ 1 – 200 ký tự”"
+                    },
+                    RoleName: {
+                        required: "Tên nhóm quyền bắt buộc nhập",
+                        minlength: "Tên nhóm quyền có độ dài từ 1 – 300 ký tự",
+                        maxlength: "Tên nhóm quyền có độ dài từ 1 – 300 ký tự"
+                    },
+                    RoleNote: {
+                        maxlength: "Thông tin ghi chú có độ dài từ 1 – 300 ký tự"
+                    }
+                },
+                submitHandler: function(form) {
+
+                    var arr = $("#treeCategoty").jstree('get_checked');
+                    $("#treeCategoty").find(".jstree-undetermined").each(
+                        function(i, element) {
+                            arr.push($(element).closest('.jstree-node').attr("id"));
+                        }
+                    );
+                    var arr1 = $("#treeSystem").jstree('get_checked');
+                    $("#treeSystem").find(".jstree-undetermined").each(
+                        function(i, element) {
+                            arr1.push($(element).closest('.jstree-node').attr("id"));
+                        }
+                    );
+                    var children = arr.concat(arr1);
+                    console.log(children);
+                    if (typeof children !== 'undefined' && children !== null && children.length > 0) {
+                        $('#checkRolesChecked').html('').css('color', 'red');
+                        $.ajax({
+                            type: "POST",
+                            url: form.action,
+                            dataType: "json",
+                            data: {
+                                funcId: children,
+                                RoleKey: $("#RoleKey").val(),
+                                RoleName: $("#RoleName").val(),
+                                RoleNote: $("#RoleNote").val()
+                            },
+                            success: function(data) {
+                                if (!data.Success) {
+                                    $("#errorRoles").append('<span class="error">' + data.Message + '</span>');
+                                } else {
+                                    alert("Thêm mới nhóm quyền thành công");
+                                    window.location.replace(data.ReturnUrl);
+                                }
+                            }
+                        });
+                    } else {
+                        $('#checkRolesChecked').html('Bạn chưa chọn quyền').css('color', 'red');
+                    }
+                }
+            });
+        });
+    </script>
+}
